@@ -12,3 +12,13 @@ dependencies = []
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+
+[tool.mypy]
+mypy_path = "src"
+files = ["src/mondaytoframe", "tests"]
+strict = true
+ignore_missing_imports = true
