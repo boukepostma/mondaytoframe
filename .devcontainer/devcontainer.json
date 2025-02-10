@@ -1,0 +1,28 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/va-h/devcontainers-features/uv:1": {}
+  },
+  
+  // Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"[python]": {
+					"editor.defaultFormatter": "charliermarsh.ruff",
+					"editor.formatOnSave": true
+				},
+        "files.autoSave": "off"
+			},
+			"extensions": [
+				"ms-python.python",
+				"visualstudioexptteam.vscodeintellicode",
+				"charliermarsh.ruff",
+				"ms-python.mypy-type-checker"
+			]
+		}
+	},
+
+	// "root" or "codespace" (recommended) user. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "codespace"
+}
