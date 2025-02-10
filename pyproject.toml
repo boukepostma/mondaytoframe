@@ -1,0 +1,14 @@
+[project]
+name = "mondaytoframe"
+version = "0.1.0"
+description = "This python package helps converting data between the Monday API and Dataframes"
+readme = "README.md"
+authors = [
+    { name = "Bouke Postma", email = "33422940+boukepostma@users.noreply.github.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
