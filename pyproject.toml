@@ -6,8 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Bouke Postma", email = "33422940+boukepostma@users.noreply.github.com" }
 ]
-requires-python = ">=3.10"
-dependencies = []
+requires-python = ">=3.12"
 
 [build-system]
 requires = ["hatchling"]
