@@ -26,5 +26,12 @@
 	// "root" or "codespace" (recommended) user. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "codespace",
 
-	"postCreateCommand": "uv run pre-commit install"
+	"postCreateCommand": "uv run pre-commit install",
+
+	"secrets": {
+		"MONDAY_TOKEN": {
+			"description": "Monday API token.",
+			"documentationUrl": "https://developer.monday.com/api-reference/docs/authentication#developer-tab"
+		}
+	}
 }
