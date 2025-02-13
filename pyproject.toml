@@ -7,6 +7,11 @@ authors = [
     { name = "Bouke Postma", email = "33422940+boukepostma@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
+dependencies = [
+    "monday>=2.0.1",
+    "pydantic>=2.10.6",
+    "requests>=2.32.3",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -14,6 +19,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "datamodel-code-generator[graphql,http]>=0.27.2",
     "mypy>=1.15.0",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
@@ -25,3 +31,8 @@ mypy_path = "src"
 files = ["src/mondaytoframe", "tests"]
 strict = true
 ignore_missing_imports = true
+exclude = ["src/mondaytoframe/model.py"]
+plugins = ['pydantic.mypy']
+
+[tool.ruff]
+exclude = ["src/mondaytoframe/model.py"]

@@ -6,10 +6,14 @@ repos:
       # Run the linter.
       - id: ruff
         args: [--fix, "--config=pyproject.toml"]
+        exclude: "src/mondaytoframe/model.py"
       # Run the formatter.
       - id: ruff-format
+        exclude: "src/mondaytoframe/model.py"
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: "v1.15.0" # Use the sha / tag you want to point at
     hooks:
       - id: mypy
         args: ["--config-file=pyproject.toml"]
+        additional_dependencies: [pydantic]
+        exclude: "src/mondaytoframe/model.py"
