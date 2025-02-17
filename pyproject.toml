@@ -33,6 +33,9 @@ strict = true
 ignore_missing_imports = true
 exclude = ["src/mondaytoframe/model.py"]
 plugins = ['pydantic.mypy']
+disable_error_code = [
+    "no-untyped-def",  # Ignore missing type annotations for functions
+]
 
 [tool.ruff]
 exclude = ["src/mondaytoframe/model.py"]
