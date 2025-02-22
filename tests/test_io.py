@@ -4,7 +4,7 @@ from monday import MondayClient
 import pytest
 import pandas as pd
 from mondaytoframe.io import load, save
-from mondaytoframe.model_manual import BoardKind
+from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
 
 

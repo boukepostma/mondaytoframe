@@ -1,5 +1,5 @@
 import pandas as pd
-from mondaytoframe.model_manual import (
+from mondaytoframe.model import (
     ColumnsByBoardColumn,
     ColumnsByBoardResponse,
     ItemsByBoardResponse,

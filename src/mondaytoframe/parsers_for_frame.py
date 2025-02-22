@@ -4,8 +4,8 @@ from typing import Any
 
 import pandas as pd
 from pydantic import validate_call
-from mondaytoframe.model_manual import ColumnType
-from mondaytoframe.model_manual import (
+from mondaytoframe.model import ColumnType
+from mondaytoframe.model import (
     DateRaw,
     DropdownRaw,
     PeopleRaw,

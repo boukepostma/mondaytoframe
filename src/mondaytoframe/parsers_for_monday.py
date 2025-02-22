@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from mondaytoframe.model_manual import ColumnType
+from mondaytoframe.model import ColumnType
 
 
 def parse_email_for_monday(v: str):
