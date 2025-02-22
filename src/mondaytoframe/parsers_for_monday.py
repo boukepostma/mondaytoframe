@@ -9,7 +9,7 @@ def parse_email_for_monday(v: str):
 
 def parse_date_for_monday(v: datetime):
     # Make sure to convert to UTC
-    if not v == v:
+    if not v == v or v is None:
         return None
     return {"date": v.strftime("%Y-%m-%d"), "time": v.strftime("%H:%M:%S")}
 
@@ -23,14 +23,20 @@ def parse_link_for_monday(v: str):
 
 
 def parse_people_for_monday(v: str):
+    if not v:
+        return None
     return v
 
 
 def parse_status_for_monday(v: str):
+    if not v:
+        return None
     return {"label": v}
 
 
 def parse_name_for_monday(v: str):
+    if not v:
+        return None
     return v
 
 
@@ -49,6 +55,8 @@ def parse_long_text_for_monday(v: str):
 
 
 def parse_phone_for_monday(v: str):
+    if not v:
+        return None
     return {"phone": v, "countryShortName": v}
 
 
@@ -57,7 +65,7 @@ def parse_dropdown_for_monday(v: str):
 
 
 def parse_numbers_for_monday(v: str):
-    return str(v) if v == v else None
+    return str(v) if v == v and v is not None else None
 
 
 PARSERS_FOR_MONDAY = {
