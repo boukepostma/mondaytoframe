@@ -4,7 +4,7 @@ import json
 import logging
 from typing import Literal, Optional, TypeAlias
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic_extra_types.country import CountryAlpha2
 from phonenumbers import (
     parse as parse_phone_number,
@@ -93,6 +93,13 @@ class SchemaColumn(BaseModel):
 
 class SchemaBoard(BaseModel):
     columns: list[SchemaColumn]
+    @field_validator("columns", mode="after")
+    @classmethod
+    def validate_unique_column_titles(cls, value: list[SchemaColumn]):
+        titles = [col.title for col in value]
+        if len(titles) != len(set(titles)):
+            raise ValueError("Duplicate column titles found in Monday board.")
+        return value
 
 
 class SchemaData(BaseModel):

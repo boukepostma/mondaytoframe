@@ -21,10 +21,6 @@ def fetch_column_specifications(
     validated = SchemaResponse(**query_result)
     col_specs = validated.data.boards[0].columns
 
-    titles = [col.title for col in col_specs]
-    if len(titles) != len(set(titles)):
-        raise ValueError("Duplicate column titles found in Monday board.")
-
     return col_specs
 
 
