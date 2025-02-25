@@ -85,22 +85,22 @@ SUPPORTED_COLUMN_TYPES = [
 UNSUPPORTED_COLUMN_TYPES = set(ColumnType) - set(SUPPORTED_COLUMN_TYPES)
 
 
-class ColumnsByBoardColumn(BaseModel):
+class SchemaColumn(BaseModel):
     title: String
     type: ColumnType
     id: str
 
 
-class ColumnsByBoardBoard(BaseModel):
-    columns: list[ColumnsByBoardColumn]
+class SchemaBoard(BaseModel):
+    columns: list[SchemaColumn]
 
 
-class ColumnsByBoardData(BaseModel):
-    boards: list[ColumnsByBoardBoard]
+class SchemaData(BaseModel):
+    boards: list[SchemaBoard]
 
 
-class ColumnsByBoardResponse(BaseModel):
-    data: ColumnsByBoardData
+class SchemaResponse(BaseModel):
+    data: SchemaData
 
 
 class ItemsByBoardColumn(BaseModel):

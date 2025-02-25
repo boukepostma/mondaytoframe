@@ -1,7 +1,7 @@
 import pandas as pd
 from mondaytoframe.model import (
-    ColumnsByBoardColumn,
-    ColumnsByBoardResponse,
+    SchemaColumn,
+    SchemaResponse,
     ItemsByBoardResponse,
 )
 from mondaytoframe.parsers_for_frame import PARSERS_FOR_DF
@@ -16,9 +16,9 @@ from mondaytoframe.parsers_for_monday import PARSERS_FOR_MONDAY
 
 def fetch_column_specifications(
     monday: MondayClient, board_id: str
-) -> list[ColumnsByBoardColumn]:
+) -> list[SchemaColumn]:
     query_result = monday.boards.fetch_columns_by_board_id(board_id)
-    validated = ColumnsByBoardResponse(**query_result)
+    validated = SchemaResponse(**query_result)
     col_specs = validated.data.boards[0].columns
 
     titles = [col.title for col in col_specs]
