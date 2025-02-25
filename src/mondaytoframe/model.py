@@ -91,8 +91,15 @@ class SchemaColumn(BaseModel):
     id: str
 
 
+class SchemaTags(BaseModel):
+    id: ID
+    name: String
+
+
 class SchemaBoard(BaseModel):
     columns: list[SchemaColumn]
+    tags: list[SchemaTags]
+
     @field_validator("columns", mode="after")
     @classmethod
     def validate_unique_column_titles(cls, value: list[SchemaColumn]):

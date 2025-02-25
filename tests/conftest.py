@@ -5,17 +5,16 @@ from typing import Any
 
 
 @fixture
-def response_fetch_columns_by_board_id() -> dict[str, Any]:
+def response_fetch_boards_by_id() -> dict[str, Any]:
     return {
         "data": {
             "boards": [
                 {
                     "id": "13",
-                    "name": "Board with all types for testing",
-                    "groups": [
-                        {"id": "topics", "title": "Group 1"},
-                        {"id": "group_title", "title": "Group 2"},
-                    ],
+                    "name": "Test Board",
+                    "permissions": "everyone",
+                    "tags": [],
+                    "groups": [{"id": "topics", "title": "Group Title"}],
                     "columns": [
                         {
                             "title": "Name",

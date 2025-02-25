@@ -1,6 +1,6 @@
 import pandas as pd
 from mondaytoframe.model import (
-    SchemaColumn,
+    SchemaBoard,
     SchemaResponse,
     ItemsByBoardResponse,
 )
@@ -14,18 +14,14 @@ from typing import Any
 from mondaytoframe.parsers_for_monday import PARSERS_FOR_MONDAY
 
 
-def fetch_column_specifications(
-    monday: MondayClient, board_id: str
-) -> list[SchemaColumn]:
-    query_result = monday.boards.fetch_columns_by_board_id(board_id)
+def fetch_schema_board(monday: MondayClient, board_id: str) -> SchemaBoard:
+    query_result = monday.boards.fetch_boards_by_id(board_id)
     validated = SchemaResponse(**query_result)
-    col_specs = validated.data.boards[0].columns
-
-    return col_specs
+    return validated.data.boards[0]
 
 
 def load(monday: MondayClient, board_id: str, **kwargs: dict[str, Any]):
-    column_specifications = fetch_column_specifications(monday, board_id)
+    column_specifications = fetch_schema_board(monday, board_id).columns
 
     items = []
     while True:
@@ -63,7 +59,7 @@ def load(monday: MondayClient, board_id: str, **kwargs: dict[str, Any]):
 def save(monday: MondayClient, board_id: str, df: pd.DataFrame, **kwargs: Any):
     if df.empty:
         return
-    column_specifications = fetch_column_specifications(monday, board_id)
+    column_specifications = fetch_schema_board(monday, board_id).columns
 
     parser_mapping = {
         spec.title: PARSERS_FOR_MONDAY[spec.type]

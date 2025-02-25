@@ -15,12 +15,12 @@ def mock_monday_client(mocker):
 
 def test_load_board_as_frame(
     mock_monday_client,
-    response_fetch_columns_by_board_id: dict[str, Any],
+    response_fetch_boards_by_id: dict[str, Any],
     response_fetch_items_by_board_id: dict[str, Any],
     dataframe_representation: pd.DataFrame,
 ):
-    mock_monday_client.boards.fetch_columns_by_board_id.return_value = (
-        response_fetch_columns_by_board_id
+    mock_monday_client.boards.fetch_boards_by_id.return_value = (
+        response_fetch_boards_by_id
     )
     mock_monday_client.boards.fetch_items_by_board_id.return_value = (
         response_fetch_items_by_board_id
@@ -36,11 +36,11 @@ def test_load_board_as_frame(
 def test_save_calls_monday_api(
     mock_monday_client,
     dataframe_representation,
-    response_fetch_columns_by_board_id,
+    response_fetch_boards_by_id,
 ):
-    # Mock fetch_column_specifications
-    mock_monday_client.boards.fetch_columns_by_board_id.return_value = (
-        response_fetch_columns_by_board_id
+    # Mock fetch_schema_board
+    mock_monday_client.boards.fetch_boards_by_id.return_value = (
+        response_fetch_boards_by_id
     )
 
     save(mock_monday_client, "board_123", dataframe_representation)
@@ -66,7 +66,7 @@ def monday_client():
 
 
 @pytest.fixture
-def board_for_test(monday_client, response_fetch_columns_by_board_id):
+def board_for_test(monday_client, response_fetch_boards_by_id):
     board_name = "Test Board"
     board = monday_client.boards.create_board(
         board_name=board_name, board_kind=BoardKind.public
@@ -77,9 +77,7 @@ def board_for_test(monday_client, response_fetch_columns_by_board_id):
 
         columns = [
             {"title": col["title"], "type": col["type"]}
-            for col in response_fetch_columns_by_board_id["data"]["boards"][0][
-                "columns"
-            ]
+            for col in response_fetch_boards_by_id["data"]["boards"][0]["columns"]
             if col["title"] != "Name" and col["type"].upper() in ColumnType.__members__
         ]
 
