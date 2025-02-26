@@ -55,7 +55,7 @@ parameters = [
     (parse_checkbox_for_monday, True, {"checked": "true"}),
     (parse_checkbox_for_monday, False, None),
     # TODO: raise error if checkbox is empty
-    (parse_tags_for_monday, "tag1,tag2", {"tag_ids": ["tag1", "tag2"]}),
+    (parse_tags_for_monday, ["1", "2"], {"tag_ids": [1, 2]}),
     (parse_tags_for_monday, "", None),
     (parse_tags_for_monday, None, None),
     (parse_long_text_for_monday, "long text", "long text"),

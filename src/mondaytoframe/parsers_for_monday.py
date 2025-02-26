@@ -46,8 +46,8 @@ def parse_checkbox_for_monday(v: bool):
     return None
 
 
-def parse_tags_for_monday(v: str):
-    return {"tag_ids": v.split(",")} if v else None
+def parse_tags_for_monday(v: list[str]):
+    return {"tag_ids": [int(s) for s in v]} if v else None
 
 
 def parse_long_text_for_monday(v: str):
@@ -77,7 +77,7 @@ PARSERS_FOR_MONDAY = {
     ColumnType.people: parse_people_for_monday,
     ColumnType.status: parse_status_for_monday,
     ColumnType.checkbox: parse_checkbox_for_monday,
-    # ColumnType.tags: parse_tags_for_monday,
+    ColumnType.tags: parse_tags_for_monday,
     ColumnType.long_text: parse_long_text_for_monday,
     ColumnType.phone: parse_phone_for_monday,
     # ColumnType.dropdown: parse_dropdown_for_monday,

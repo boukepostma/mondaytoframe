@@ -108,7 +108,7 @@ from deepdiff import DeepDiff
         (
             parse_tags_for_df,
             ColumnValue(id="1", text="tag1, tag2", type="tags", value=None),
-            "tag1, tag2",
+            ["tag1", "tag2"],
         ),
         (
             parse_tags_for_df,

@@ -76,7 +76,7 @@ SUPPORTED_COLUMN_TYPES = [
     ColumnType.status,
     ColumnType.name,
     ColumnType.checkbox,
-    # ColumnType.tags,
+    ColumnType.tags,
     ColumnType.long_text,
     ColumnType.phone,
     # ColumnType.dropdown,
