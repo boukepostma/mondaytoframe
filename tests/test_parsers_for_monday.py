@@ -63,8 +63,8 @@ parameters = [
     (parse_long_text_for_monday, None, None),
     (
         parse_phone_for_monday,
-        "31622222222",
-        {"phone": "31622222222", "countryShortName": "31622222222"},
+        "31622222222 NL",
+        {"phone": "+31622222222", "countryShortName": "NL"},
     ),
     (parse_phone_for_monday, "", None),
     (parse_phone_for_monday, None, None),
@@ -80,4 +80,9 @@ parameters = [
 
 @pytest.mark.parametrize("func,input_value,expected", parameters)
 def test_parsers_for_monday(func, input_value, expected):
-    assert not DeepDiff(func(input_value), expected, ignore_nan_inequality=True)
+    assert not DeepDiff(
+        func(input_value),
+        expected,
+        ignore_nan_inequality=True,
+        ignore_string_type_changes=True,
+    )

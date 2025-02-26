@@ -99,7 +99,7 @@ PARSERS_FOR_DF = {
     ColumnType.people: parse_people_for_df,
     ColumnType.status: parse_status_for_df,
     ColumnType.checkbox: parse_checkbox_for_df,
-    ColumnType.tags: parse_tags_for_df,
+    # ColumnType.tags: parse_tags_for_df,
     ColumnType.long_text: parse_long_text_for_df,
     ColumnType.phone: parse_phone_for_df,
     # ColumnType.dropdown: parse_dropdown_for_df,

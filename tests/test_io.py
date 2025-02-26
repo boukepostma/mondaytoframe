@@ -116,7 +116,6 @@ def test_integration_with_monday_api(
         dataframe_representation.set_index(df.index)
         .replace("1,2", user_id)
         .assign(Group="Group Title")
-        .iloc[:, :9]
     )
 
     save(monday_client, board_id, adjusted_df, create_labels_if_missing=True)
