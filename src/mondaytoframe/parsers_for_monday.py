@@ -36,12 +36,6 @@ def parse_status_for_monday(v: str):
     return {"label": v}
 
 
-def parse_name_for_monday(v: str):
-    if not v:
-        return None
-    return v
-
-
 def parse_checkbox_for_monday(v: bool):
     if v:
         return {"checked": "true"}
@@ -84,5 +78,4 @@ PARSERS_FOR_MONDAY = {
     ColumnType.phone: parse_phone_for_monday,
     ColumnType.dropdown: parse_dropdown_for_monday,
     ColumnType.numbers: parse_numbers_for_monday,
-    "Name": parse_name_for_monday,
 }

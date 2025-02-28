@@ -4,7 +4,6 @@ from datetime import datetime
 from mondaytoframe.parsers_for_monday import (
     parse_email_for_monday,
     parse_date_for_monday,
-    parse_name_for_monday,
     parse_text_for_monday,
     parse_link_for_monday,
     parse_people_for_monday,
@@ -49,9 +48,6 @@ parameters = [
     (parse_status_for_monday, "Working on it", {"label": "Working on it"}),
     (parse_status_for_monday, "", None),
     (parse_status_for_monday, None, None),
-    (parse_name_for_monday, "Task Name", "Task Name"),
-    (parse_name_for_monday, "", None),
-    (parse_name_for_monday, None, None),
     (parse_checkbox_for_monday, True, {"checked": "true"}),
     (parse_checkbox_for_monday, False, None),
     # TODO: raise error if checkbox is empty
@@ -68,7 +64,7 @@ parameters = [
     ),
     (parse_phone_for_monday, "", None),
     (parse_phone_for_monday, None, None),
-    (parse_dropdown_for_monday, {"label1", "label2"}, {"labels": ["label1", "label2"]}),
+    (parse_dropdown_for_monday, ["label1", "label2"], {"labels": ["label1", "label2"]}),
     (parse_dropdown_for_monday, "", None),
     (parse_dropdown_for_monday, None, None),
     (parse_numbers_for_monday, 10.0, "10.0"),

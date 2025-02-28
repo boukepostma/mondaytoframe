@@ -89,7 +89,7 @@ def response_fetch_boards_by_id() -> dict[str, Any]:
                             "settings_str": '{"done_colors":[1],"labels":{"7":"Low","10":"Critical ⚠️️","109":"Medium","110":"High"},"labels_positions_v2":{"5":4,"7":3,"10":0,"109":2,"110":1},"labels_colors":{"7":{"color":"#579bfc","border":"#4387e8","var_name":"bright-blue"},"10":{"color":"#333333","border":"#000","var_name":"soft-black"},"109":{"color":"#5559df","border":"#5559df","var_name":"indigo"},"110":{"color":"#401694","border":"#401694","var_name":"dark_indigo"}}}',
                         },
                         {
-                            "title": "Board with all types for testing",
+                            "title": "Connected Board",
                             "id": "connect_boards_mkmyc6sf",
                             "type": "board_relation",
                             "settings_str": '{"allowCreateReflectionColumn":false,"boardIds":[8426052206]}',
@@ -143,7 +143,7 @@ def response_fetch_items_by_board_id() -> dict[str, Any]:
         "data": {
             "boards": [
                 {
-                    "name": "Board with all types for testing",
+                    "name": "Test Board",
                     "items_page": {
                         "cursor": None,
                         "items": [
@@ -406,5 +406,9 @@ def dataframe_representation() -> pd.DataFrame:
             "Link": ["https://somelink.nl/", None],
             "Email": ["test@test.nl", None],
             "Phone": ["+31622222222 NL", None],
+            "Connected Board": [None, None],
+            "Mirror": [None, None],
+            "Formula": [None, None],
+            "Files": ["https://account-name.monday.com/docs/8426060102", None],
         }
     ).set_index("id")

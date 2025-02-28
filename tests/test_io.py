@@ -10,6 +10,9 @@ import requests  # type: ignore[import-untyped]
 from graphql import build_schema, parse, validate
 
 
+NON_SUPPORTED_COLUMNS = ["Connected Board", "Mirror", "Formula", "Files"]
+
+
 @pytest.fixture
 def mock_monday_client(mocker):
     return mocker.MagicMock()
@@ -40,11 +43,14 @@ def test_load_board_as_frame(
         response_fetch_items_by_board_id
     )
 
-    result = load(mock_monday_client, "board_123")
+    result = load(mock_monday_client, "board_123", unknown_type="drop")
 
     _check_queries_were_valid(mock_monday_client)
     pd.testing.assert_frame_equal(
-        result, dataframe_representation, check_column_type=False
+        result,
+        dataframe_representation.drop(columns=NON_SUPPORTED_COLUMNS),
+        check_column_type=False,
+        check_like=True,
     )
 
 
@@ -58,7 +64,7 @@ def test_save_calls_monday_api(
         response_fetch_boards_by_id
     )
 
-    save(mock_monday_client, "board_123", dataframe_representation)
+    save(mock_monday_client, "board_123", dataframe_representation, unknown_type="drop")
 
     _check_queries_were_valid(mock_monday_client)
 
@@ -145,12 +151,31 @@ def test_integration_with_monday_api(
     )
 
     # Save the adjusted dataframe to the board and verify everything is still the same
-    save(monday_client, board_id, adjusted_df, create_labels_if_missing=True)
-    result_df = load(monday_client, board_id)[adjusted_df.columns]
-    pd.testing.assert_frame_equal(adjusted_df, result_df, check_column_type=False)
+    save(
+        monday_client,
+        board_id,
+        adjusted_df,
+        unknown_type="drop",
+        create_labels_if_missing=True,
+    )
+    first_result = load(monday_client, board_id, unknown_type="drop")
+    pd.testing.assert_frame_equal(
+        adjusted_df.drop(columns=NON_SUPPORTED_COLUMNS),
+        first_result,
+        check_column_type=False,
+        check_like=True,
+    )
 
     # Switch the content of the rows (not the index) and do a round trip again to test emptying
-    switched_rows_df = adjusted_df.iloc[::-1].set_index(adjusted_df.index)
-    save(monday_client, board_id, switched_rows_df, create_labels_if_missing=True)
-    result_df = load(monday_client, board_id)[adjusted_df.columns]
-    pd.testing.assert_frame_equal(switched_rows_df, result_df, check_column_type=False)
+    switched_rows_df = first_result.iloc[::-1].set_index(first_result.index)
+    save(
+        monday_client,
+        board_id,
+        switched_rows_df,
+        unknown_type="raise",
+        create_labels_if_missing=True,
+    )
+    second_result = load(monday_client, board_id)
+    pd.testing.assert_frame_equal(
+        switched_rows_df, second_result, check_column_type=False, check_like=True
+    )
