@@ -166,7 +166,7 @@ def response_fetch_items_by_board_id() -> dict[str, Any]:
                                     },
                                     {
                                         "id": "dropdown_mkmyr6sf",
-                                        "text": "a,b",
+                                        "text": "a, b",
                                         "type": "dropdown",
                                         "value": '{"ids":[1,2]}',
                                     },
@@ -394,7 +394,7 @@ def dataframe_representation() -> pd.DataFrame:
             "Group": ["Group 1", "Group 2"],
             "Person": ["1,2", None],
             "Status": ["Working on it", None],
-            # "Dropdown": [["a", "b"], None],
+            "Dropdown": [{"a", "b"}, {}],
             "Label": ["Label 1", None],
             "Date": [pd.Timestamp("2025-02-10 00:00:00"), pd.NaT],
             "Text": ["abc", None],

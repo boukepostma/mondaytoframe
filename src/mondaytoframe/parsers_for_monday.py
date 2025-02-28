@@ -2,6 +2,8 @@ from datetime import datetime
 
 from mondaytoframe.model import ColumnType, PhoneRaw
 
+from typing import Sequence
+
 
 def parse_email_for_monday(v: str):
     return {"email": v, "text": v} if v else None
@@ -61,8 +63,8 @@ def parse_phone_for_monday(v: str):
     return PhoneRaw(phone=phone, countryShortName=country).model_dump()
 
 
-def parse_dropdown_for_monday(v: str):
-    return {"labels": v.split(",")} if v else None
+def parse_dropdown_for_monday(v: Sequence[str]):
+    return {"labels": list(v)} if v else None
 
 
 def parse_numbers_for_monday(v: str):
@@ -80,7 +82,7 @@ PARSERS_FOR_MONDAY = {
     ColumnType.tags: parse_tags_for_monday,
     ColumnType.long_text: parse_long_text_for_monday,
     ColumnType.phone: parse_phone_for_monday,
-    # ColumnType.dropdown: parse_dropdown_for_monday,
+    ColumnType.dropdown: parse_dropdown_for_monday,
     ColumnType.numbers: parse_numbers_for_monday,
     "Name": parse_name_for_monday,
 }

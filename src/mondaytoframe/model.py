@@ -79,7 +79,7 @@ SUPPORTED_COLUMN_TYPES = [
     ColumnType.tags,
     ColumnType.long_text,
     ColumnType.phone,
-    # ColumnType.dropdown,
+    ColumnType.dropdown,
     ColumnType.numbers,
 ]
 UNSUPPORTED_COLUMN_TYPES = set(ColumnType) - set(SUPPORTED_COLUMN_TYPES)

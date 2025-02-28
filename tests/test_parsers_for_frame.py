@@ -142,13 +142,13 @@ from deepdiff import DeepDiff
         ),
         (
             parse_dropdown_for_df,
-            ColumnValue(id="1", text="1,2", type="dropdown", value='{"ids": [1, 2]}'),
-            "1,2",
+            ColumnValue(id="1", text="1, 2", type="dropdown", value='{"ids": [2, 3]}'),
+            {"1", "2"},
         ),
         (
             parse_dropdown_for_df,
             ColumnValue(id="1", text="", type="dropdown", value=None),
-            None,
+            {},
         ),
         (
             parse_numbers_for_df,

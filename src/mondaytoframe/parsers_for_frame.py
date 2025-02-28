@@ -78,10 +78,14 @@ def parse_phone_for_df(v: ColumnValue):
 
 @validate_call()
 def parse_dropdown_for_df(v: ColumnValue):
-    if v.value is None:
-        return None
+    if v.value is None or v.text is None:
+        return {}
     validated = DropdownRaw.model_validate_json(v.value)
-    return ",".join(map(str, validated.ids))
+    if v.text.count(",") + 1 != len(validated.ids):
+        raise ValueError(
+            "Make sure the labels in Monday do not contain commas: labels with commas are not supported."
+        )
+    return set(v.text.split(", "))
 
 
 @validate_call()
@@ -102,6 +106,6 @@ PARSERS_FOR_DF = {
     ColumnType.tags: parse_tags_for_df,
     ColumnType.long_text: parse_long_text_for_df,
     ColumnType.phone: parse_phone_for_df,
-    # ColumnType.dropdown: parse_dropdown_for_df,
+    ColumnType.dropdown: parse_dropdown_for_df,
     ColumnType.numbers: parse_numbers_for_df,
 }

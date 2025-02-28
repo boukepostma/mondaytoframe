@@ -68,7 +68,7 @@ parameters = [
     ),
     (parse_phone_for_monday, "", None),
     (parse_phone_for_monday, None, None),
-    (parse_dropdown_for_monday, "label1,label2", {"labels": ["label1", "label2"]}),
+    (parse_dropdown_for_monday, {"label1", "label2"}, {"labels": ["label1", "label2"]}),
     (parse_dropdown_for_monday, "", None),
     (parse_dropdown_for_monday, None, None),
     (parse_numbers_for_monday, 10.0, "10.0"),
