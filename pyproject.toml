@@ -17,6 +17,12 @@ dependencies = [
     "requests>=2.32.3",
 ]
 
+[project.urls]
+Homepage = "https://github.com/boukepostma/mondaytoframe"
+Repository = "https://github.com/boukepostma/mondaytoframe.git"
+Documentation = "https://github.com/boukepostma/mondaytoframe#readme"
+Issues = "https://github.com/boukepostma/mondaytoframe/issues"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
