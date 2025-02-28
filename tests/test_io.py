@@ -107,6 +107,7 @@ def test_integration_with_monday_api(
 ):
     board_id = board_for_test
 
+    # Load (empty) board
     df = load(monday_client, board_id)
 
     # Some of the monday-defined ID's must come from the API, such as item and user id's
@@ -118,8 +119,7 @@ def test_integration_with_monday_api(
         .assign(Group="Group Title")
     )
 
+    # Save the adjusted dataframe to the board and verify everything is still the same
     save(monday_client, board_id, adjusted_df, create_labels_if_missing=True)
-
     result_df = load(monday_client, board_id)[adjusted_df.columns]
-
     pd.testing.assert_frame_equal(adjusted_df, result_df, check_column_type=False)
