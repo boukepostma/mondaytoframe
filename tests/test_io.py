@@ -123,3 +123,9 @@ def test_integration_with_monday_api(
     save(monday_client, board_id, adjusted_df, create_labels_if_missing=True)
     result_df = load(monday_client, board_id)[adjusted_df.columns]
     pd.testing.assert_frame_equal(adjusted_df, result_df, check_column_type=False)
+
+    # Switch the content of the rows (not the index) and do a round trip again to test emptying
+    switched_rows_df = adjusted_df.iloc[::-1].set_index(adjusted_df.index)
+    save(monday_client, board_id, switched_rows_df, create_labels_if_missing=True)
+    result_df = load(monday_client, board_id)[adjusted_df.columns]
+    pd.testing.assert_frame_equal(switched_rows_df, result_df, check_column_type=False)
