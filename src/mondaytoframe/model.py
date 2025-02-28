@@ -84,7 +84,6 @@ SUPPORTED_COLUMN_TYPES = [
     ColumnType.dropdown,
     ColumnType.numbers,
 ]
-UNSUPPORTED_COLUMN_TYPES = set(ColumnType) - set(SUPPORTED_COLUMN_TYPES)
 
 
 class SchemaColumn(BaseModel):
@@ -159,7 +158,7 @@ class ColumnValue(BaseModel):
 
     @model_validator(mode="after")
     def warn_if_no_parser_available(self):
-        if self.type in UNSUPPORTED_COLUMN_TYPES:
+        if self.type not in SUPPORTED_COLUMN_TYPES:
             logger.warning(
                 f"Column {self.value} has unsupported type {self.type} and will not be loaded"
             )
