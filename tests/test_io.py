@@ -6,11 +6,25 @@ import pandas as pd
 from mondaytoframe.io import load, save
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
+import requests  # type: ignore[import-untyped]
+from graphql import build_schema, parse, validate
 
 
 @pytest.fixture
 def mock_monday_client(mocker):
     return mocker.MagicMock()
+
+
+@pytest.fixture
+def schema():
+    schema_url = "https://api.monday.com/v2/get_schema?format=sdl"
+    response = requests.get(schema_url)
+
+    if response.status_code != 200:
+        pytest.skip("Unable to fetch schema")
+    response.raise_for_status()
+
+    return build_schema(response.text)
 
 
 def test_load_board_as_frame(
@@ -28,6 +42,7 @@ def test_load_board_as_frame(
 
     result = load(mock_monday_client, "board_123")
 
+    _check_queries_were_valid(mock_monday_client)
     pd.testing.assert_frame_equal(
         result, dataframe_representation, check_column_type=False
     )
@@ -45,10 +60,20 @@ def test_save_calls_monday_api(
 
     save(mock_monday_client, "board_123", dataframe_representation)
 
+    _check_queries_were_valid(mock_monday_client)
+
     # Ensure the Monday API was called for each item
     assert mock_monday_client.items.change_multiple_column_values.call_count == len(
         dataframe_representation
     )
+
+
+def _check_queries_were_valid(mock_monday_client):
+    """Validates whether the queries done to mock client are valid for Monday's graphql schema"""
+    for call_args in mock_monday_client.client.execute.call_args_list:
+        query = call_args[0][0]
+        parsed_query = parse(query)
+        assert not validate(schema, parsed_query), f"Error in query {query}"
 
 
 def test_save_empty_dataframe(mock_monday_client, dataframe_representation):
