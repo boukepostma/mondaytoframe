@@ -1,11 +1,32 @@
 name: publish
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.3"
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Run tests
+        run: uv run pytest
+        env:
+          MONDAY_TOKEN: ${{ secrets.MONDAY_TOKEN }}
+
   publish:
+    needs: test
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -27,4 +48,19 @@ jobs:
       
       - name: Publish to PyPI
         run: uv publish
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write 
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+
       

@@ -29,6 +29,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "bump2version>=1.0.1",
     "deepdiff>=8.2.0",
     "graphql-core>=3.2.6",
     "mypy>=1.15.0",
