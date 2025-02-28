@@ -2,6 +2,7 @@ import datetime
 from enum import Enum
 import json
 import logging
+
 from typing import Literal, Optional, TypeAlias
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -12,6 +13,7 @@ from phonenumbers import (
     format_number,
 )
 
+logger = logging.getLogger(__name__)
 
 ID: TypeAlias = str
 JSON: TypeAlias = str
@@ -158,7 +160,7 @@ class ColumnValue(BaseModel):
     @model_validator(mode="after")
     def warn_if_no_parser_available(self):
         if self.type in UNSUPPORTED_COLUMN_TYPES:
-            logging.warning(
+            logger.warning(
                 f"Column {self.value} has unsupported type {self.type} and will not be loaded"
             )
         return self
