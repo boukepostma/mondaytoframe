@@ -29,5 +29,5 @@ jobs:
         run: uv publish
 
       - name: Publish documentation
-        run: uv run mkdocs gh-deploy --force
+        run: uv run --group=docs mkdocs gh-deploy --force
       
