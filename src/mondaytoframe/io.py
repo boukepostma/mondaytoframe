@@ -45,6 +45,38 @@ def load(
     unknown_type: Literal["text", "drop", "raise"] = "text",
     **kwargs: dict[str, Any],
 ):
+    """
+    Load data from a Monday.com board into a pandas DataFrame.
+
+    Arguments:
+        board_id (str): The ID of the Monday.com board to load data from.
+        monday_token (TokenType): The authentication token for Monday.com API.
+        unknown_type (Literal["text", "drop", "raise"]): Specifies how to handle unknown column types.
+            - "text": Use a default text parser for unknown column types (default).
+            - "drop": Ignore unknown column types.
+            - "raise": Raise a ValueError if unknown column types are found.
+        **kwargs (dict[str, Any]): Additional arguments to pass to the Monday.com API.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the board data.
+
+    Raises:
+        ValueError: If unknown column types are found and `unknown_type` is set to "raise".
+
+    Notes:
+        The function uses predefined parsers for known column types. If a column type is not recognized and `unknown_type`
+        is set to "text", a default text parser will be used. If `unknown_type` is set to "drop", the unknown columns will
+        be ignored.
+
+    Usage:
+
+    ```python
+    from mondaytoframe.io import load
+
+    df = load(board_id="123456", monday_token="your_token")
+    print(df.head())
+    ```
+    """
     monday = MondayClient(monday_token)
     column_specifications = _fetch_schema_board(monday, board_id).columns
 
@@ -121,6 +153,39 @@ def save(
     unknown_type: Literal["drop", "raise"] = "raise",
     **kwargs: Any,
 ):
+    """
+    Save a pandas DataFrame to a Monday.com board.
+
+    Arguments:
+        board_id (str): The ID of the Monday.com board.
+        df (pd.DataFrame): The DataFrame to save to the board.
+        monday_token (TokenType): The authentication token for Monday.com.
+        unknown_type (Literal["drop", "raise"]): Specifies how to handle columns in the DataFrame that do not have a corresponding parser in the board schema.
+            - "drop": Ignore columns that do not have a corresponding parser (default).
+            - "raise": Raise a ValueError if columns do not have a corresponding parser.
+        **kwargs (Any): Additional keyword arguments to pass to the Monday.com API.
+
+    Raises:
+        ValueError: If unknown_type is "raise" and there are columns in the DataFrame that do not have a corresponding parser in the board schema.
+
+    Returns:
+        None
+
+    Usage:
+
+    ```python
+    from mondaytoframe.io import save
+    import pandas as pd
+
+    df = pd.DataFrame({
+        "Name": ["Task 1", "Task 2"],
+        "Status": ["Done", "In Progress"],
+        "Tags": [["tag1"], ["tag2", "tag3"]],
+    })
+    save(board_id="123456", df=df, monday_token="your_token")
+    ```
+    """
+
     if df.empty:
         return
     monday = MondayClient(monday_token)
