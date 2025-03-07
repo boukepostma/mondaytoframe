@@ -51,6 +51,45 @@ save("you_board_id", df_transformed)
 
 - Easy conversion between Monday.com API data and DataFrames
 - Simplifies data manipulation and analysis
+- Support for multiple [monday column types](https://developer.monday.com/api-reference/reference/column-types-reference)
+
+### Supported Data Types
+
+| Column Type            | Supported by `load` | Supported by `save` |
+|------------------------|---------------------|---------------------|
+| Item ID                | ✅                  | ✅                  |
+| Name                   | ✅                  | ✅                  |
+| Text                   | ✅                  | ✅                  |
+| Long Text              | ✅                  | ✅                  |
+| Number                 | ✅                  | ✅                  |
+| Date                   | ✅                  | ✅                  |
+| Status                 | ✅                  | ✅                  |
+| Dropdown               | ✅                  | ✅                  |
+| People                 | ✅                  | ✅                  |
+| Tags                   | ✅                  | ✅                  |
+| Checkbox               | ✅                  | ✅                  |
+| Link                   | ✅                  | ✅                  |
+| Email                  | ✅                  | ✅                  |
+| Phone                  | ✅                  | ✅                  |
+| Timeline               | ❌                  | ❌                  |
+| Country                | ❌                  | ❌                  |
+| Color Picker           | ❌                  | ❌                  |
+| Rating                 | ❌                  | ❌                  |
+| Progress Tracking      | ❌                  | ❌                  |
+| Formula                | ❌                  | ❌                  |
+| Auto Number            | ❌                  | ❌                  |
+| Dependency             | ❌                  | ❌                  |
+| Button                 | ❌                  | ❌                  |
+| World Clock            | ❌                  | ❌                  |
+| Location               | ❌                  | ❌                  |
+| Hour                   | ❌                  | ❌                  |
+| Week                   | ❌                  | ❌                  |
+| File                   | ❌                  | ❌                  |
+| Board Relation         | ❌                  | ❌                  |
+| Mirror                 | ❌                  | ❌                  |
+| Vote                   | ❌                  | ❌                  |
+| Subitems               | ❌                  | ❌                  |
+
 
 ## Contributing
 
