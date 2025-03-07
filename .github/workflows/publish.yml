@@ -27,4 +27,7 @@ jobs:
       
       - name: Publish to PyPI
         run: uv publish
+
+      - name: Publish documentation
+        run: uv run mkdocs gh-deploy --force
       
