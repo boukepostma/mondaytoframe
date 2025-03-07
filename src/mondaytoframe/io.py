@@ -71,7 +71,7 @@ def load(
     Usage:
 
     ```python
-    from mondaytoframe.io import load
+    from mondaytoframe import load
 
     df = load(board_id="123456", monday_token="your_token")
     print(df.head())
@@ -171,7 +171,7 @@ def save(
     Usage:
 
     ```python
-    from mondaytoframe.io import save
+    from mondaytoframe import save
     import pandas as pd
 
     df = pd.DataFrame({
