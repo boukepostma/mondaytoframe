@@ -25,13 +25,13 @@ TOKEN_NAME = "MONDAYTOFRAME_TOKEN"
 TokenType = Annotated[str, Field(default=os.getenv(TOKEN_NAME), validate_default=True)]
 
 
-def fetch_schema_board(monday: MondayClient, board_id: str) -> SchemaBoard:
+def _fetch_schema_board(monday: MondayClient, board_id: str) -> SchemaBoard:
     query_result = monday.boards.fetch_boards_by_id(board_id)
     validated = SchemaResponse(**query_result)
     return validated.data.boards[0]
 
 
-def create_or_get_tag(monday: MondayClient, tag_name: str):
+def _create_or_get_tag(monday: MondayClient, tag_name: str):
     query_result = monday.custom.execute_custom_query(
         f"""mutation {{ create_or_get_tag (tag_name: "{tag_name}") {{ id }} }}"""
     )
@@ -46,7 +46,7 @@ def load(
     **kwargs: dict[str, Any],
 ):
     monday = MondayClient(monday_token)
-    column_specifications = fetch_schema_board(monday, board_id).columns
+    column_specifications = _fetch_schema_board(monday, board_id).columns
 
     cols_without_parsers = {
         spec.id: spec.type
@@ -124,7 +124,7 @@ def save(
     if df.empty:
         return
     monday = MondayClient(monday_token)
-    board_schema = fetch_schema_board(monday, board_id)
+    board_schema = _fetch_schema_board(monday, board_id)
     column_specifications = board_schema.columns
     tag_specifications = board_schema.tags
 
@@ -164,7 +164,7 @@ def save(
         .dropna()
     )
     missing_tag_mapping = {
-        tag: create_or_get_tag(monday, tag)
+        tag: _create_or_get_tag(monday, tag)
         for tag in tags_in_board - tag_mapping.keys()
     }
     all_tag_mapping = tag_mapping | missing_tag_mapping
