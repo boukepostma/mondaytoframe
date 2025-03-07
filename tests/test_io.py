@@ -3,7 +3,8 @@ from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
-from mondaytoframe.io import load, save, TokenType
+from mondaytoframe import load, save
+from mondaytoframe.io import TokenType
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
 import requests  # type: ignore[import-untyped]

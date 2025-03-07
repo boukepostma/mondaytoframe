@@ -15,7 +15,7 @@ pip install mondaytoframe
 Here's a basic example of how to use the package using a token string:
 
 ```python
-from mondaytoframe.io import load, save
+from mondaytoframe import load, save
 
 monday_token = "your_monday_token"
 
@@ -33,7 +33,7 @@ save("you_board_id", df_transformed, monday_token)
 Alternatively, you can set `MONDAYTOFRAME_TOKEN` environment variable:
 
 ```python
-from mondaytoframe.io import load, save
+from mondaytoframe import load, save
 
 # Load your board to a dataframe... 
 df = load("your_board_id")
