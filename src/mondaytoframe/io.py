@@ -82,7 +82,7 @@ def load(
 
     items = []
     while True:
-        query_result = monday.boards.fetch_items_by_board_id(board_id)
+        query_result = monday.boards.fetch_items_by_board_id(board_id, **kwargs)
         validated = ItemsByBoardResponse(**query_result)
         board = validated.data.boards[0]
         items += board.items_page.items
