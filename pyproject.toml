@@ -1,6 +1,6 @@
 [project]
 name = "mondaytoframe"
-version = "0.1.0"
+version = "0.1.1"
 description = "This python package helps converting data between the Monday API and Dataframes"
 readme = "README.md"
 authors = [
