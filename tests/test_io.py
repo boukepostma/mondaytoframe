@@ -31,19 +31,20 @@ def schema():
 
 
 def test_load_board_as_frame(
-    mock_monday_client,
+    mocker,
     response_fetch_boards_by_id: dict[str, Any],
     response_fetch_items_by_board_id: dict[str, Any],
     dataframe_representation: pd.DataFrame,
 ):
-    mock_monday_client.boards.fetch_boards_by_id.return_value = (
+    mock_monday_client = mocker.patch("mondaytoframe.io.MondayClient")
+    mock_monday_client().boards.fetch_boards_by_id.return_value = (
         response_fetch_boards_by_id
     )
-    mock_monday_client.boards.fetch_items_by_board_id.return_value = (
+    mock_monday_client().boards.fetch_items_by_board_id.return_value = (
         response_fetch_items_by_board_id
     )
 
-    result = load(mock_monday_client, "board_123", unknown_type="drop")
+    result = load("fake_token", "board_123", unknown_type="drop")
 
     _check_queries_were_valid(mock_monday_client)
     pd.testing.assert_frame_equal(
@@ -55,45 +56,61 @@ def test_load_board_as_frame(
 
 
 def test_save_calls_monday_api(
-    mock_monday_client,
+    mocker,
     dataframe_representation,
     response_fetch_boards_by_id,
 ):
-    # Mock fetch_schema_board
-    mock_monday_client.boards.fetch_boards_by_id.return_value = (
+    mock_monday_client = mocker.patch("mondaytoframe.io.MondayClient")
+    mock_monday_client().boards.fetch_boards_by_id.return_value = (
         response_fetch_boards_by_id
     )
 
-    save(mock_monday_client, "board_123", dataframe_representation, unknown_type="drop")
+    save("fake_token", "board_123", dataframe_representation, unknown_type="drop")
+
+    # Ensure the Monday API was called for each item
+    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
+        dataframe_representation
+    )
+
+    # Ensure the Monday API was called for each item
+    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
+        dataframe_representation
+    )
 
     _check_queries_were_valid(mock_monday_client)
 
     # Ensure the Monday API was called for each item
-    assert mock_monday_client.items.change_multiple_column_values.call_count == len(
+    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
         dataframe_representation
     )
 
 
 def _check_queries_were_valid(mock_monday_client):
     """Validates whether the queries done to mock client are valid for Monday's graphql schema"""
-    for call_args in mock_monday_client.client.execute.call_args_list:
+    for call_args in mock_monday_client().client.execute.call_args_list:
         query = call_args[0][0]
         parsed_query = parse(query)
         assert not validate(schema, parsed_query), f"Error in query {query}"
 
 
-def test_save_empty_dataframe(mock_monday_client, dataframe_representation):
+def test_save_empty_dataframe(mocker, dataframe_representation):
+    mock_monday_client = mocker.patch("monday.MondayClient")
     empty_df = dataframe_representation.iloc[0:0, :]
-    save(mock_monday_client, "board_123", empty_df)
-    mock_monday_client.items.change_multiple_column_values.assert_not_called()
+    save("fake_token", "board_123", empty_df)
+    mock_monday_client().items.change_multiple_column_values.assert_not_called()
 
 
 @pytest.fixture(scope="module")
-def monday_client():
+def monday_token() -> str | None:
     token = os.getenv("MONDAY_TOKEN")
-    if not token:
+    if token is None:
         pytest.skip("MONDAY_TOKEN environment variable is not set")
-    return MondayClient(token)
+    return token
+
+
+@pytest.fixture(scope="module")
+def monday_client(monday_token) -> MondayClient:
+    return MondayClient(monday_token)
 
 
 @pytest.fixture
@@ -134,12 +151,12 @@ def board_for_test(monday_client, response_fetch_boards_by_id):
 
 
 def test_integration_with_monday_api(
-    monday_client, board_for_test, dataframe_representation
+    monday_token, monday_client, board_for_test, dataframe_representation
 ):
     board_id = board_for_test
 
     # Load (empty) board
-    df = load(monday_client, board_id)
+    df = load(monday_token, board_id)
 
     # Some of the monday-defined ID's must come from the API, such as item and user id's
     users = monday_client.users.fetch_users()
@@ -152,13 +169,13 @@ def test_integration_with_monday_api(
 
     # Save the adjusted dataframe to the board and verify everything is still the same
     save(
-        monday_client,
+        monday_token,
         board_id,
         adjusted_df,
         unknown_type="drop",
         create_labels_if_missing=True,
     )
-    first_result = load(monday_client, board_id, unknown_type="drop")
+    first_result = load(monday_token, board_id, unknown_type="drop")
     pd.testing.assert_frame_equal(
         adjusted_df.drop(columns=NON_SUPPORTED_COLUMNS),
         first_result,
@@ -169,13 +186,13 @@ def test_integration_with_monday_api(
     # Switch the content of the rows (not the index) and do a round trip again to test emptying
     switched_rows_df = first_result.iloc[::-1].set_index(first_result.index)
     save(
-        monday_client,
+        monday_token,
         board_id,
         switched_rows_df,
         unknown_type="raise",
         create_labels_if_missing=True,
     )
-    second_result = load(monday_client, board_id)
+    second_result = load(monday_token, board_id)
     pd.testing.assert_frame_equal(
         switched_rows_df, second_result, check_column_type=False, check_like=True
     )

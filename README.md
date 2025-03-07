@@ -19,17 +19,16 @@ from mondaytoframe.io import load, save
 from monday import MondayClient
 
 # Create a Monday client using your Monday API token
-client = MondayClient("your_monday_token")
+monday_token = "your_monday_token"
 
 # Now you can use the client with mondaytoframe functions
-df = load(monday_client, "your_board_id")
-print(df)
+df = load(monday_token, "your_board_id")
 
 # ... perform data transformation on your dataframe
-df_transformed = your_transformation_logic(df)
+df_transformed = df.copy()
 
 # ... and store the results in Monday again!
-save(monday_client, "you_board_id", df_transformed)
+save(monday_token, "you_board_id", df_transformed)
 
 ```
 

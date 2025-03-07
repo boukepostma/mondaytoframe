@@ -32,11 +32,12 @@ def create_or_get_tag(monday: MondayClient, tag_name: str):
 
 
 def load(
-    monday: MondayClient,
+    monday_token: str,
     board_id: str,
     unknown_type: Literal["text", "drop", "raise"] = "text",
     **kwargs: dict[str, Any],
 ):
+    monday = MondayClient(monday_token)
     column_specifications = fetch_schema_board(monday, board_id).columns
 
     cols_without_parsers = {
@@ -105,7 +106,7 @@ def load(
 
 
 def save(
-    monday: MondayClient,
+    monday_token: str,
     board_id: str,
     df: pd.DataFrame,
     unknown_type: Literal["drop", "raise"] = "raise",
@@ -113,6 +114,7 @@ def save(
 ):
     if df.empty:
         return
+    monday = MondayClient(monday_token)
     board_schema = fetch_schema_board(monday, board_id)
     column_specifications = board_schema.columns
     tag_specifications = board_schema.tags
