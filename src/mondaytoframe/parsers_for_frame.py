@@ -79,7 +79,7 @@ def parse_phone_for_df(v: ColumnValue):
 @validate_call()
 def parse_dropdown_for_df(v: ColumnValue):
     if v.value is None or v.text is None:
-        return {}
+        return set()
     validated = DropdownRaw.model_validate_json(v.value)
     if v.text.count(",") + 1 != len(validated.ids):
         raise ValueError(

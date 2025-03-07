@@ -1,67 +1,79 @@
 from datetime import datetime
 
+from pydantic import validate_call
+
 from mondaytoframe.model import ColumnType, PhoneRaw
 
-from typing import Sequence
 
-
-def parse_email_for_monday(v: str):
+@validate_call
+def parse_email_for_monday(v: str | None):
     return {"email": v, "text": v} if v else None
 
 
-def parse_date_for_monday(v: datetime):
+@validate_call
+def parse_date_for_monday(v: datetime | None):
     # Make sure to convert to UTC
     if not v == v or v is None:
         return None
     return {"date": v.strftime("%Y-%m-%d"), "time": v.strftime("%H:%M:%S")}
 
 
-def parse_text_for_monday(v: str):
+@validate_call
+def parse_text_for_monday(v: str | None):
     return v if v else None
 
 
-def parse_link_for_monday(v: str):
+@validate_call
+def parse_link_for_monday(v: str | None):
     return {"text": v, "url": v} if v else None
 
 
-def parse_people_for_monday(v: str):
+@validate_call
+def parse_people_for_monday(v: str | None):
     if not v:
         return None
     return v
 
 
-def parse_status_for_monday(v: str):
+@validate_call
+def parse_status_for_monday(v: str | None):
     if not v:
         return None
     return {"label": v}
 
 
-def parse_checkbox_for_monday(v: bool):
+@validate_call
+def parse_checkbox_for_monday(v: bool | None):
     if v:
         return {"checked": "true"}
     return None
 
 
-def parse_tags_for_monday(v: list[str]):
-    return {"tag_ids": [int(s) for s in v]} if v else None
+@validate_call
+def parse_tags_for_monday(v: list[int] | None):
+    return {"tag_ids": v} if v else None
 
 
-def parse_long_text_for_monday(v: str):
+@validate_call
+def parse_long_text_for_monday(v: str | None):
     return v if v else None
 
 
-def parse_phone_for_monday(v: str):
+@validate_call
+def parse_phone_for_monday(v: str | None):
     if not v:
         return None
     phone, country = v.split(" ", maxsplit=1)
     return PhoneRaw(phone=phone, countryShortName=country).model_dump()
 
 
-def parse_dropdown_for_monday(v: Sequence[str]):
+@validate_call
+def parse_dropdown_for_monday(v: list[str] | None):
     return {"labels": list(v)} if v else None
 
 
-def parse_numbers_for_monday(v: str):
+@validate_call
+def parse_numbers_for_monday(v: float | None):
     return str(v) if v == v and v is not None else None
 
 

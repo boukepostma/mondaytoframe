@@ -148,7 +148,7 @@ from deepdiff import DeepDiff
         (
             parse_dropdown_for_df,
             ColumnValue(id="1", text="", type="dropdown", value=None),
-            {},
+            set(),
         ),
         (
             parse_numbers_for_df,

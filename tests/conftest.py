@@ -394,7 +394,7 @@ def dataframe_representation() -> pd.DataFrame:
             "Group": ["Group 1", "Group 2"],
             "Person": ["1,2", None],
             "Status": ["Working on it", None],
-            "Dropdown": [{"a", "b"}, {}],
+            "Dropdown": [{"a", "b"}, set()],
             "Label": ["Label 1", None],
             "Date": [pd.Timestamp("2025-02-10 00:00:00"), pd.NaT],
             "Text": ["abc", None],
