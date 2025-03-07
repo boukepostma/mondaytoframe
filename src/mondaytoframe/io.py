@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from mondaytoframe.model import (
     ColumnType,
@@ -14,8 +15,14 @@ from typing import Any, Literal
 
 from mondaytoframe.parsers_for_monday import PARSERS_FOR_MONDAY
 import logging
+from pydantic import Field, validate_call
+from typing_extensions import Annotated
 
 logger = logging.getLogger(__name__)
+
+TOKEN_NAME = "MONDAYTOFRAME_TOKEN"
+
+TokenType = Annotated[str, Field(default=os.getenv(TOKEN_NAME), validate_default=True)]
 
 
 def fetch_schema_board(monday: MondayClient, board_id: str) -> SchemaBoard:
@@ -31,9 +38,10 @@ def create_or_get_tag(monday: MondayClient, tag_name: str):
     return int(query_result["data"]["create_or_get_tag"]["id"])
 
 
+@validate_call()
 def load(
-    monday_token: str,
     board_id: str,
+    monday_token: TokenType,
     unknown_type: Literal["text", "drop", "raise"] = "text",
     **kwargs: dict[str, Any],
 ):
@@ -105,10 +113,11 @@ def load(
     )
 
 
+@validate_call(config=dict(arbitrary_types_allowed=True))
 def save(
-    monday_token: str,
     board_id: str,
     df: pd.DataFrame,
+    monday_token: TokenType,
     unknown_type: Literal["drop", "raise"] = "raise",
     **kwargs: Any,
 ):

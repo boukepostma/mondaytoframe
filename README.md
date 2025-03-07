@@ -12,25 +12,40 @@ pip install mondaytoframe
 
 ## Usage
 
-Here's a basic example of how to use the package:
+Here's a basic example of how to use the package using a token string:
 
 ```python
 from mondaytoframe.io import load, save
-from monday import MondayClient
 
-# Create a Monday client using your Monday API token
 monday_token = "your_monday_token"
 
-# Now you can use the client with mondaytoframe functions
-df = load(monday_token, "your_board_id")
+# Load your board to a dataframe... 
+df = load("your_board_id", monday_token)
 
 # ... perform data transformation on your dataframe
 df_transformed = df.copy()
 
 # ... and store the results in Monday again!
-save(monday_token, "you_board_id", df_transformed)
+save("you_board_id", df_transformed, monday_token)
 
 ```
+
+Alternatively, you can set `MONDAYTOFRAME_TOKEN` environment variable:
+
+```python
+from mondaytoframe.io import load, save
+
+# Load your board to a dataframe... 
+df = load("your_board_id")
+
+# ... perform data transformation on your dataframe
+df_transformed = df.copy()
+
+# ... and store the results in Monday again!
+save("you_board_id", df_transformed)
+
+```
+
 
 ## Features
 

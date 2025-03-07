@@ -3,11 +3,12 @@ from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
-from mondaytoframe.io import load, save
+from mondaytoframe.io import load, save, TokenType
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
 import requests  # type: ignore[import-untyped]
 from graphql import build_schema, parse, validate
+from pydantic import validate_call
 
 
 NON_SUPPORTED_COLUMNS = ["Connected Board", "Mirror", "Formula", "Files"]
@@ -44,7 +45,7 @@ def test_load_board_as_frame(
         response_fetch_items_by_board_id
     )
 
-    result = load("fake_token", "board_123", unknown_type="drop")
+    result = load("board_123", "fake_token", unknown_type="drop")
 
     _check_queries_were_valid(mock_monday_client)
     pd.testing.assert_frame_equal(
@@ -65,7 +66,7 @@ def test_save_calls_monday_api(
         response_fetch_boards_by_id
     )
 
-    save("fake_token", "board_123", dataframe_representation, unknown_type="drop")
+    save("board_123", dataframe_representation, "fake_token", unknown_type="drop")
 
     # Ensure the Monday API was called for each item
     assert mock_monday_client().items.change_multiple_column_values.call_count == len(
@@ -96,7 +97,7 @@ def _check_queries_were_valid(mock_monday_client):
 def test_save_empty_dataframe(mocker, dataframe_representation):
     mock_monday_client = mocker.patch("monday.MondayClient")
     empty_df = dataframe_representation.iloc[0:0, :]
-    save("fake_token", "board_123", empty_df)
+    save("board_123", empty_df, "fake_token")
     mock_monday_client().items.change_multiple_column_values.assert_not_called()
 
 
@@ -156,7 +157,7 @@ def test_integration_with_monday_api(
     board_id = board_for_test
 
     # Load (empty) board
-    df = load(monday_token, board_id)
+    df = load(board_id, monday_token)
 
     # Some of the monday-defined ID's must come from the API, such as item and user id's
     users = monday_client.users.fetch_users()
@@ -169,13 +170,13 @@ def test_integration_with_monday_api(
 
     # Save the adjusted dataframe to the board and verify everything is still the same
     save(
-        monday_token,
         board_id,
         adjusted_df,
+        monday_token,
         unknown_type="drop",
         create_labels_if_missing=True,
     )
-    first_result = load(monday_token, board_id, unknown_type="drop")
+    first_result = load(board_id, monday_token, unknown_type="drop")
     pd.testing.assert_frame_equal(
         adjusted_df.drop(columns=NON_SUPPORTED_COLUMNS),
         first_result,
@@ -186,13 +187,24 @@ def test_integration_with_monday_api(
     # Switch the content of the rows (not the index) and do a round trip again to test emptying
     switched_rows_df = first_result.iloc[::-1].set_index(first_result.index)
     save(
-        monday_token,
         board_id,
         switched_rows_df,
+        monday_token,
         unknown_type="raise",
         create_labels_if_missing=True,
     )
-    second_result = load(monday_token, board_id)
+    second_result = load(board_id, monday_token)
     pd.testing.assert_frame_equal(
         switched_rows_df, second_result, check_column_type=False, check_like=True
     )
+
+
+def test_tokentype_annotation(mocker):
+    os_patched = mocker.patch("mondaytoframe.io.os")
+    os_patched.getenv.return_value = None
+
+    @validate_call
+    def function_with_token_type_argument(token: TokenType): ...
+
+    with pytest.raises(ValueError, match="Input should be a valid string"):
+        function_with_token_type_argument()
