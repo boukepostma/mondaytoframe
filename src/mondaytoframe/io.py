@@ -168,9 +168,6 @@ def save(
     Raises:
         ValueError: If unknown_type is "raise" and there are columns in the DataFrame that do not have a corresponding parser in the board schema.
 
-    Returns:
-        None
-
     Usage:
 
     ```python

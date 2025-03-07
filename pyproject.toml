@@ -39,6 +39,13 @@ dev = [
     "ruff>=0.9.6",
     "types-requests>=2.32.0.20241016",
 ]
+docs = [
+    "mkdocs>=1.6.1",
+    "mkdocs-include-markdown-plugin>=7.1.4",
+    "mkdocs-material>=9.6.7",
+    "mkdocstrings>=0.28.2",
+    "mkdocstrings-python>=1.16.2",
+]
 
 [tool.mypy]
 mypy_path = "src"
