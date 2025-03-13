@@ -44,7 +44,7 @@ def response_fetch_boards_by_id() -> dict[str, Any]:
                             "title": "Label",
                             "id": "label_mkmytka4",
                             "type": "status",
-                            "settings_str": '{"done_colors":[1],"labels":{"3":"Label 2","105":"Label 1","156":"Label 3"},"labels_positions_v2":{"3":1,"5":3,"105":0,"156":2},"labels_colors":{"3":{"color":"#007eb5","border":"#3db0df","var_name":"blue-links"},"105":{"color":"#9aadbd","border":"#9aadbd","var_name":"winter"},"156":{"color":"#9d99b9","border":"#9d99b9","var_name":"purple_gray"}}}',
+                            "settings_str": '{"done_colors":[1],"labels":{"3":"Label 2","105":"1","156":"Label 3"},"labels_positions_v2":{"3":1,"5":3,"105":0,"156":2},"labels_colors":{"3":{"color":"#007eb5","border":"#3db0df","var_name":"blue-links"},"105":{"color":"#9aadbd","border":"#9aadbd","var_name":"winter"},"156":{"color":"#9d99b9","border":"#9d99b9","var_name":"purple_gray"}}}',
                         },
                         {
                             "title": "Date",
@@ -172,7 +172,7 @@ def response_fetch_items_by_board_id() -> dict[str, Any]:
                                     },
                                     {
                                         "id": "label_mkmytka4",
-                                        "text": "Label 1",
+                                        "text": "1",
                                         "type": "status",
                                         "value": '{"index":105,"post_id":null,"changed_at":"2025-02-07T09:52:41.753Z"}',
                                     },
@@ -395,7 +395,7 @@ def dataframe_representation() -> pd.DataFrame:
             "Person": ["1,2", None],
             "Status": ["Working on it", None],
             "Dropdown": [{"a", "b"}, set()],
-            "Label": ["Label 1", None],
+            "Label": ["1", None],
             "Date": [pd.Timestamp("2025-02-10 00:00:00"), pd.NaT],
             "Text": ["abc", None],
             "Long text": ["def", None],

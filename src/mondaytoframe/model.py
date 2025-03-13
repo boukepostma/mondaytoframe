@@ -151,14 +151,6 @@ class ColumnValue(BaseModel):
                 )
         return self
 
-    @model_validator(mode="after")
-    def status_text_is_not_numeric(self) -> "ColumnValue":
-        if (self.type == ColumnType.status) and self.text and self.text.isnumeric():
-            raise ValueError(
-                f"For Status columns, labels are not allowed to be a number: found label {self.text}"
-            )
-        return self
-
 
 class ItemsByBoardGroup(BaseModel):
     title: String
