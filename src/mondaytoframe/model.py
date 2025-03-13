@@ -105,8 +105,11 @@ class SchemaBoard(BaseModel):
     @classmethod
     def validate_unique_column_titles(cls, value: list[SchemaColumn]):
         titles = [col.title for col in value]
-        if len(titles) != len(set(titles)):
-            raise ValueError("Duplicate column titles found in Monday board.")
+        duplicates = [title for title in set(titles) if titles.count(title) > 1]
+        if duplicates:
+            raise ValueError(
+                f"Duplicate column titles found in Monday board: {duplicates}"
+            )
         return value
 
 
