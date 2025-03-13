@@ -15,7 +15,7 @@ from typing import Any, Literal
 
 from mondaytoframe.parsers_for_monday import PARSERS_FOR_MONDAY
 import logging
-from pydantic import Field, validate_call
+from pydantic import Field, validate_call, ConfigDict
 from typing_extensions import Annotated
 
 logger = logging.getLogger(__name__)
@@ -38,12 +38,14 @@ def _create_or_get_tag(monday: MondayClient, tag_name: str):
     return int(query_result["data"]["create_or_get_tag"]["id"])
 
 
-@validate_call()
+@validate_call(
+    config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
+)
 def load(
     board_id: str,
     monday_token: TokenType,
     unknown_type: Literal["text", "drop", "raise"] = "text",
-    **kwargs: dict[str, Any],
+    **kwargs: Any,
 ):
     """
     Load data from a Monday.com board into a pandas DataFrame.
@@ -145,7 +147,9 @@ def load(
     )
 
 
-@validate_call(config=dict(arbitrary_types_allowed=True))
+@validate_call(
+    config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
+)
 def save(
     board_id: str,
     df: pd.DataFrame,
