@@ -177,7 +177,7 @@ def test_integration_with_monday_api(
         unknown_type="drop",
         create_labels_if_missing=True,
     )
-    first_result = load(board_id, monday_token, unknown_type="drop")
+    first_result = load(board_id, monday_token, unknown_type="drop", limit=1)
     pd.testing.assert_frame_equal(
         adjusted_df.drop(columns=NON_SUPPORTED_COLUMNS),
         first_result,

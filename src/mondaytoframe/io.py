@@ -115,12 +115,16 @@ def load(
                 )
 
     items = []
+    cursor = None
     while True:
-        query_result = monday.boards.fetch_items_by_board_id(board_id, **kwargs)
+        query_result = monday.boards.fetch_items_by_board_id(
+            board_id, cursor=cursor, **kwargs
+        )
         validated = ItemsByBoardResponse(**query_result)
         board = validated.data.boards[0]
         items += board.items_page.items
-        if board.items_page.cursor is None:
+        cursor = board.items_page.cursor
+        if cursor is None:
             break
 
     items_parsed = []
