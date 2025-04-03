@@ -46,6 +46,26 @@ from deepdiff import DeepDiff
             pd.NaT,
         ),
         (
+            parse_date_for_df,
+            ColumnValue(
+                id="1",
+                text="",
+                type="date",
+                value='{"date":"2025-02-10", "time": null}',
+            ),
+            datetime(2025, 2, 10, 0, 0),
+        ),
+        (
+            parse_date_for_df,
+            ColumnValue(
+                id="1",
+                text="",
+                type="date",
+                value='{"date":null, "time": null}',
+            ),
+            pd.NaT,
+        ),
+        (
             parse_text_for_df,
             ColumnValue(id="1", text="some text", type="text", value=None),
             "some text",

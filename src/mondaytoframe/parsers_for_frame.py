@@ -25,6 +25,8 @@ def parse_date_for_df(v: ColumnValue) -> Any:
     if v.value is None:
         return pd.NaT
     validated = DateRaw.model_validate_json(v.value)
+    if validated.date is None:
+        return pd.NaT
     return datetime.combine(validated.date, validated.time)
 
 

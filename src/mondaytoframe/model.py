@@ -12,6 +12,7 @@ from phonenumbers import (
     PhoneNumberFormat,
     format_number,
 )
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -214,8 +215,13 @@ class DropdownRaw(BaseModel):
 
 
 class DateRaw(BaseModel):
-    date: datetime.date
+    date: datetime.date | None = None
     time: datetime.time = Field(default_factory=lambda: datetime.time(0, 0, 0))
+
+    @field_validator("time", mode="before")
+    @classmethod
+    def set_default_time_if_none(cls, v: Any):
+        return datetime.time(0, 0, 0) if v is None else v
 
 
 class BoardKind(Enum):
