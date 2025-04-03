@@ -1,0 +1,68 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_part:
+        description: The part of the version to update (patch, minor or major)
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+        default: 'patch'
+        required: true
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.6.3"
+
+    - name: Bump version number
+      id: bump_version
+      run: |
+        uvx bump-my-version bump ${{ github.event.inputs.version_part }}
+        echo "package_version=$(cat pyproject.toml | grep 'current_version =' | awk -F'"' '{print $2}')" >> $GITHUB_OUTPUT
+  
+    - name: Update the CHANGELOG according to 'Keep a Changelog' guidelines
+      uses: thomaseizinger/keep-a-changelog-new-release@v1
+      with:
+        version: ${{ steps.bump_version.outputs.package_version }}
+
+    - name: Create a new release branch
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git checkout -b release-${{ steps.bump_version.outputs.package_version }}
+        git push -u origin release-${{ steps.bump_version.outputs.package_version }}
+    
+    - name: Commit the changes
+      run: |
+        git commit -am "Bump version and CHANGELOG for release ${{ steps.bump_version.outputs.package_version }}"
+        git push
+    
+    - name: Open a PR to merge the release to main
+      id: open_pr
+      run: |
+        gh pr create -B main -H release-${{ steps.bump_version.outputs.package_version }} --title "Release ${{ steps.bump_version.outputs.package_version }}" --body "Bump version and CHANGELOG for next release." --assignee "${{ github.repository_owner }}"
+        echo "pull_request_number=$(gh pr list --base main --json number,createdAt --jq 'sort_by(.createdAt) | reverse | .[0].number')" >> $GITHUB_OUTPUT
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Change the commit message to add PR number
+      run: |
+        git commit -a --amend -m ":rocket: Bump version and CHANGELOG for release ${{ steps.bump_version.outputs.package_version }} (#${{ steps.open_pr.outputs.pull_request_number }})"
+        git push -f
+
+    - name: merge the PR
+      run: |
+        gh pr merge ${{ steps.open_pr.outputs.pull_request_number }} --squash --delete-branch
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
