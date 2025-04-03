@@ -1,11 +1,28 @@
 name: publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
 
 jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check commit message
+        id: check
+        run: |
+          echo "should_run=${{ startsWith(github.event.head_commit.message, ':rocket: Bump version and CHANGELOG for release') }}" >> $GITHUB_OUTPUT
+
   publish:
+    needs: check-commit
+    if: needs.check-commit.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -31,3 +48,31 @@ jobs:
       - name: Publish documentation
         run: uv run --group=docs mkdocs gh-deploy --force
       
+      - name: Set dynamically package version as output variable
+        id: set_package_version
+        run: |
+          echo "package_version=$(cat pyproject.toml | grep 'current_version =' | awk -F'"' '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Create temporary file with the body content for the release
+        run: |
+          grep -Poz "## \[${{ steps.set_package_version.outputs.package_version }}] - \d{4}-\d{2}-\d{2}[\S\s]+?(?=## \[\d+\.\d+\.\d+\]|\[.+\]:)" CHANGELOG.md > release_body.md
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.set_package_version.outputs.package_version }}
+          name: Release ${{ steps.set_package_version.outputs.package_version }}
+          body_path: ./release_body.md
+          draft: false
+          prerelease: false
+
+      - name: Rollback Release in case of run failure
+        if: failure() && steps.create_release.outputs.id != ''
+        uses: author/action-rollback@stable
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
