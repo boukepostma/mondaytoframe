@@ -3,6 +3,8 @@ import pandas as pd
 
 from typing import Any
 
+MULTIPLE_PERSON_PLACEHOLDER = "1,2"
+
 
 @fixture
 def response_fetch_boards_by_id() -> dict[str, Any]:
@@ -392,7 +394,7 @@ def dataframe_representation() -> pd.DataFrame:
             "id": ["10", "20"],
             "Name": ["Item with values", "Item without values"],
             "Group": ["Group 1", "Group 2"],
-            "Person": ["1,2", None],
+            "Person": [MULTIPLE_PERSON_PLACEHOLDER, None],
             "Status": ["Working on it", None],
             "Dropdown": [{"a", "b"}, set()],
             "Label": ["1", None],

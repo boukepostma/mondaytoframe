@@ -11,6 +11,8 @@ import requests  # type: ignore[import-untyped]
 from graphql import build_schema, parse, validate
 from pydantic import validate_call
 
+from tests.conftest import MULTIPLE_PERSON_PLACEHOLDER
+
 
 NON_SUPPORTED_COLUMNS = ["Connected Board", "Mirror", "Formula", "Files"]
 
@@ -165,7 +167,7 @@ def test_integration_with_monday_api(
     user_id = users["data"]["users"][0]["id"]
     adjusted_df = (
         dataframe_representation.set_index(df.index)
-        .replace("1,2", user_id)
+        .replace(MULTIPLE_PERSON_PLACEHOLDER, user_id)
         .assign(Group="Group Title")
     )
 
