@@ -58,3 +58,6 @@ disable_error_code = [
     "no-untyped-def",  # Ignore missing type annotations for functions
 ]
 
+[tool.bumpversion]
+current_version = "0.1.1"
+
