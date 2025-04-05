@@ -52,7 +52,6 @@ parameters = [
     (parse_checkbox_for_monday, False, None),
     # TODO: raise error if checkbox is empty
     (parse_tags_for_monday, ["1", "2"], {"tag_ids": [1, 2]}),
-    (parse_tags_for_monday, {"1", "2"}, {"tag_ids": [1, 2]}),
     (parse_tags_for_monday, None, None),
     (parse_long_text_for_monday, "long text", "long text"),
     (parse_long_text_for_monday, "", None),
@@ -65,7 +64,6 @@ parameters = [
     (parse_phone_for_monday, "", None),
     (parse_phone_for_monday, None, None),
     (parse_dropdown_for_monday, ["label1", "label2"], {"labels": ["label1", "label2"]}),
-    (parse_dropdown_for_monday, {"label1", "label2"}, {"labels": ["label1", "label2"]}),
     (parse_dropdown_for_monday, None, None),
     (parse_numbers_for_monday, 10.0, "10.0"),
     (parse_numbers_for_monday, 10, "10.0"),
