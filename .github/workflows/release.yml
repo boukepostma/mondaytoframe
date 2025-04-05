@@ -29,6 +29,7 @@ jobs:
       id: bump_version
       run: |
         uvx bump-my-version bump ${{ github.event.inputs.version_part }}
+        uv lock
         echo "package_version=$(cat pyproject.toml | grep 'current_version =' | awk -F'"' '{print $2}')" >> $GITHUB_OUTPUT
   
     - name: Update the CHANGELOG according to 'Keep a Changelog' guidelines
