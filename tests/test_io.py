@@ -3,7 +3,7 @@ from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
-from mondaytoframe import read, update
+from mondaytoframe import read, update, create_board, create_items, delete_board
 from mondaytoframe.io import TokenType
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
@@ -118,40 +118,33 @@ def monday_client(monday_token) -> MondayClient:
 
 
 @pytest.fixture
-def board_for_test(monday_client, response_fetch_boards_by_id):
+def board_for_test(monday_token, response_fetch_boards_by_id):
     board_name = "Test Board"
-    board = monday_client.boards.create_board(
-        board_name=board_name, board_kind=BoardKind.public
-    )
+
+    column_types = {
+        col["title"]: col["type"]
+        for col in response_fetch_boards_by_id["data"]["boards"][0]["columns"]
+        if col["title"] != "Name" and col["type"].upper() in ColumnType.__members__
+    }
 
     try:
-        board_id = board["data"]["create_board"]["id"]
-
-        columns = [
-            {"title": col["title"], "type": col["type"]}
-            for col in response_fetch_boards_by_id["data"]["boards"][0]["columns"]
-            if col["title"] != "Name" and col["type"].upper() in ColumnType.__members__
-        ]
-
-        for column in columns:
-            monday_client.columns.create_column(
-                board_id=board_id,
-                column_title=column["title"],
-                column_type=getattr(ColumnType, column["type"].upper()),
-            )
-
-        # Create the second item on the board. The first one is made automatically when the board is created
-        monday_client.items.create_item(
-            board_id=board_id,
-            item_name="Task 2",
-            group_id="topics",
+        board_id = create_board(
+            column_types, monday_token, board_name, BoardKind.public
         )
 
+        create_items(
+            board_id,
+            pd.DataFrame(
+                {
+                    "Name": ["Task 2"],
+                    "Group": ["topics"],
+                }
+            ),
+            monday_token,
+        )
         yield board_id
     finally:
-        monday_client.custom.execute_custom_query(
-            f"mutation {{ delete_board (board_id: {board_id}) {{ id }} }}"
-        )
+        delete_board(board_id, monday_token)
 
 
 def test_integration_with_monday_api(

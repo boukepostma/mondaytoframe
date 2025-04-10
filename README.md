@@ -12,40 +12,43 @@ pip install mondaytoframe
 
 ## Usage
 
-Here's a basic example of how to use the package using a token string:
+Here's a basic example of how to use the package:
 
 ```python
-from mondaytoframe import read, update
+from mondaytoframe import create_board, create_items, read, update
+import pandas as pd
+import os
 
-monday_token = "your_monday_token"
+monday_token = "your_monday_token_here"
 
-# Read your board as a dataframe... 
-df = read("your_board_id", monday_token)
+# Create a new board
+columns = {"Numbers Column": "numbers", "Text Column": "text"}
+board_id = create_board(columns, monday_token)
+
+# Create items in a board
+new_df = pd.DataFrame(
+    {
+        "Name": ["first", "second"],
+        "Numbers Column": [1.0, 2.0],
+        "Text Column": ["a", "b"],
+    }
+)
+create_items(board_id, new_df, monday_token)
+
+# Read your board as a dataframe...
+df = read(board_id, monday_token)
 
 # ... perform data transformation on your dataframe
 df_transformed = df.copy()
+df_transformed["Numbers Column"] = df["Numbers Column"] + 1
 
 # ... and store the results in Monday again!
-update("you_board_id", df_transformed, monday_token)
+update(board_id, df_transformed, monday_token)
 
 ```
 
-Alternatively, you can set `MONDAYTOFRAME_TOKEN` environment variable:
-
-```python
-from mondaytoframe import read, update
-
-# Read your board as a dataframe... 
-df = read("your_board_id")
-
-# ... perform data transformation on your dataframe
-df_transformed = df.copy()
-
-# ... and store the results in Monday again!
-update("you_board_id", df_transformed)
-
-```
-
+> [!TIP]
+> Instead of providing `monday_token`, you could also set `MONDAYTOFRAME_TOKEN` environment variable.
 
 ## Features
 
