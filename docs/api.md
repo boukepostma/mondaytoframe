@@ -1,10 +1,10 @@
 # Api reference
 
-::: mondaytoframe.load
+::: mondaytoframe.read
     options:
       show_root_heading: true
       show_source: true
-::: mondaytoframe.save
+::: mondaytoframe.update
     options:
       show_root_heading: true
       show_source: true

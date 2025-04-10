@@ -41,17 +41,17 @@ def _create_or_get_tag(monday: MondayClient, tag_name: str):
 @validate_call(
     config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
 )
-def load(
+def read(
     board_id: str,
     monday_token: TokenType,
     unknown_type: Literal["text", "drop", "raise"] = "text",
     **kwargs: Any,
 ):
     """
-    Load data from a Monday.com board into a pandas DataFrame.
+    Read data from a Monday.com board into a pandas DataFrame.
 
     Arguments:
-        board_id (str): The ID of the Monday.com board to load data from.
+        board_id (str): The ID of the Monday.com board to read data from.
         monday_token (TokenType): The authentication token for Monday.com API.
         unknown_type (Literal["text", "drop", "raise"]): Specifies how to handle unknown column types.
             - "text": Use a default text parser for unknown column types (default).
@@ -73,9 +73,9 @@ def load(
     Usage:
 
     ```python
-    from mondaytoframe import load
+    from mondaytoframe import read
 
-    df = load(board_id="123456", monday_token="your_token")
+    df = read(board_id="123456", monday_token="your_token")
     print(df.head())
     ```
     """
@@ -102,7 +102,7 @@ def load(
                 )
             case "drop":
                 msg = (
-                    f"Unknown column types found in the board: {cols_without_parsers}. Not loading them."
+                    f"Unknown column types found in the board: {cols_without_parsers}. Not reading them."
                     "Set unknown_type='text' to try to get them using a default text parser."
                 )
                 logger.warning(msg)
@@ -154,7 +154,7 @@ def load(
 @validate_call(
     config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
 )
-def save(
+def update(
     board_id: str,
     df: pd.DataFrame,
     monday_token: TokenType,
@@ -162,11 +162,11 @@ def save(
     **kwargs: Any,
 ):
     """
-    Save a pandas DataFrame to a Monday.com board.
+    Update a pandas DataFrame to a Monday.com board.
 
     Arguments:
         board_id (str): The ID of the Monday.com board.
-        df (pd.DataFrame): The DataFrame to save to the board.
+        df (pd.DataFrame): The DataFrame to update to the board.
         monday_token (TokenType): The authentication token for Monday.com.
         unknown_type (Literal["drop", "raise"]): Specifies how to handle columns in the DataFrame that do not have a corresponding parser in the board schema.
             - "drop": Ignore columns that do not have a corresponding parser (default).
@@ -179,7 +179,7 @@ def save(
     Usage:
 
     ```python
-    from mondaytoframe import save
+    from mondaytoframe import update
     import pandas as pd
 
     df = pd.DataFrame({
@@ -187,7 +187,7 @@ def save(
         "Status": ["Done", "In Progress"],
         "Tags": [["tag1"], ["tag2", "tag3"]],
     })
-    save(board_id="123456", df=df, monday_token="your_token")
+    update(board_id="123456", df=df, monday_token="your_token")
     ```
     """
 
@@ -216,7 +216,7 @@ def save(
             case "raise":
                 raise ValueError(
                     f"Unknown column types found in the board: {cols_without_parsers}."
-                    "Set unknown_type='drop' to ignore this error and save all other columns."
+                    "Set unknown_type='drop' to ignore this error and update all other columns."
                 )
             case "drop":
                 msg = f"Unknown column types found in the board: {cols_without_parsers}. Not saving them."
