@@ -15,12 +15,12 @@ pip install mondaytoframe
 Here's a basic example of how to use the package using a token string:
 
 ```python
-from mondaytoframe import load, save
+from mondaytoframe import read, save
 
 monday_token = "your_monday_token"
 
-# Load your board to a dataframe... 
-df = load("your_board_id", monday_token)
+# Read your board as a dataframe... 
+df = read("your_board_id", monday_token)
 
 # ... perform data transformation on your dataframe
 df_transformed = df.copy()
@@ -33,10 +33,10 @@ save("you_board_id", df_transformed, monday_token)
 Alternatively, you can set `MONDAYTOFRAME_TOKEN` environment variable:
 
 ```python
-from mondaytoframe import load, save
+from mondaytoframe import read, save
 
-# Load your board to a dataframe... 
-df = load("your_board_id")
+# Read your board as a dataframe... 
+df = read("your_board_id")
 
 # ... perform data transformation on your dataframe
 df_transformed = df.copy()
@@ -55,7 +55,7 @@ save("you_board_id", df_transformed)
 
 ### Supported Data Types
 
-| Column Type            | Supported by `load` | Supported by `save` |
+| Column Type            | Supported by `read` | Supported by `save` |
 |------------------------|---------------------|---------------------|
 | Item ID                | ✅                  | ✅                  |
 | Name                   | ✅                  | ✅                  |

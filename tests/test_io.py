@@ -3,7 +3,7 @@ from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
-from mondaytoframe import load, save
+from mondaytoframe import read, save
 from mondaytoframe.io import TokenType
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
@@ -34,7 +34,7 @@ def schema():
     return build_schema(response.text)
 
 
-def test_load_board_as_frame(
+def test_read_board_as_frame(
     mocker,
     response_fetch_boards_by_id: dict[str, Any],
     response_fetch_items_by_board_id: dict[str, Any],
@@ -48,7 +48,7 @@ def test_load_board_as_frame(
         response_fetch_items_by_board_id
     )
 
-    result = load("board_123", "fake_token", unknown_type="drop")
+    result = read("board_123", "fake_token", unknown_type="drop")
 
     _check_queries_were_valid(mock_monday_client)
     pd.testing.assert_frame_equal(
@@ -160,7 +160,7 @@ def test_integration_with_monday_api(
     board_id = board_for_test
 
     # Load (empty) board
-    df = load(board_id, monday_token)
+    df = read(board_id, monday_token)
 
     # Some of the monday-defined ID's must come from the API, such as item and user id's
     users = monday_client.users.fetch_users()
@@ -179,7 +179,7 @@ def test_integration_with_monday_api(
         unknown_type="drop",
         create_labels_if_missing=True,
     )
-    first_result = load(board_id, monday_token, unknown_type="drop", limit=1)
+    first_result = read(board_id, monday_token, unknown_type="drop", limit=1)
     pd.testing.assert_frame_equal(
         adjusted_df.drop(columns=NON_SUPPORTED_COLUMNS),
         first_result,
@@ -196,7 +196,7 @@ def test_integration_with_monday_api(
         unknown_type="raise",
         create_labels_if_missing=True,
     )
-    second_result = load(board_id, monday_token)
+    second_result = read(board_id, monday_token)
     pd.testing.assert_frame_equal(
         switched_rows_df, second_result, check_column_type=False, check_like=True
     )

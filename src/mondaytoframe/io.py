@@ -41,17 +41,17 @@ def _create_or_get_tag(monday: MondayClient, tag_name: str):
 @validate_call(
     config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
 )
-def load(
+def read(
     board_id: str,
     monday_token: TokenType,
     unknown_type: Literal["text", "drop", "raise"] = "text",
     **kwargs: Any,
 ):
     """
-    Load data from a Monday.com board into a pandas DataFrame.
+    Read data from a Monday.com board into a pandas DataFrame.
 
     Arguments:
-        board_id (str): The ID of the Monday.com board to load data from.
+        board_id (str): The ID of the Monday.com board to read data from.
         monday_token (TokenType): The authentication token for Monday.com API.
         unknown_type (Literal["text", "drop", "raise"]): Specifies how to handle unknown column types.
             - "text": Use a default text parser for unknown column types (default).
@@ -73,9 +73,9 @@ def load(
     Usage:
 
     ```python
-    from mondaytoframe import load
+    from mondaytoframe import read
 
-    df = load(board_id="123456", monday_token="your_token")
+    df = read(board_id="123456", monday_token="your_token")
     print(df.head())
     ```
     """
@@ -102,7 +102,7 @@ def load(
                 )
             case "drop":
                 msg = (
-                    f"Unknown column types found in the board: {cols_without_parsers}. Not loading them."
+                    f"Unknown column types found in the board: {cols_without_parsers}. Not reading them."
                     "Set unknown_type='text' to try to get them using a default text parser."
                 )
                 logger.warning(msg)
