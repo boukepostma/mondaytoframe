@@ -1,3 +1,3 @@
-from .io import read, save
+from .io import read, update
 
-__all__ = ["read", "save"]
+__all__ = ["read", "update"]

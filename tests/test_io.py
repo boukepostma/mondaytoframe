@@ -3,7 +3,7 @@ from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
-from mondaytoframe import read, save
+from mondaytoframe import read, update
 from mondaytoframe.io import TokenType
 from mondaytoframe.model import BoardKind
 from monday.resources.types import ColumnType
@@ -59,7 +59,7 @@ def test_read_board_as_frame(
     )
 
 
-def test_save_calls_monday_api(
+def test_update_calls_monday_api(
     mocker,
     dataframe_representation,
     response_fetch_boards_by_id,
@@ -69,7 +69,7 @@ def test_save_calls_monday_api(
         response_fetch_boards_by_id
     )
 
-    save("board_123", dataframe_representation, "fake_token", unknown_type="drop")
+    update("board_123", dataframe_representation, "fake_token", unknown_type="drop")
 
     # Ensure the Monday API was called for each item
     assert mock_monday_client().items.change_multiple_column_values.call_count == len(
@@ -97,10 +97,10 @@ def _check_queries_were_valid(mock_monday_client):
         assert not validate(schema, parsed_query), f"Error in query {query}"
 
 
-def test_save_empty_dataframe(mocker, dataframe_representation):
+def test_update_empty_dataframe(mocker, dataframe_representation):
     mock_monday_client = mocker.patch("monday.MondayClient")
     empty_df = dataframe_representation.iloc[0:0, :]
-    save("board_123", empty_df, "fake_token")
+    update("board_123", empty_df, "fake_token")
     mock_monday_client().items.change_multiple_column_values.assert_not_called()
 
 
@@ -171,8 +171,8 @@ def test_integration_with_monday_api(
         .assign(Group="Group Title")
     )
 
-    # Save the adjusted dataframe to the board and verify everything is still the same
-    save(
+    # Update the adjusted dataframe to the board and verify everything is still the same
+    update(
         board_id,
         adjusted_df,
         monday_token,
@@ -189,7 +189,7 @@ def test_integration_with_monday_api(
 
     # Switch the content of the rows (not the index) and do a round trip again to test emptying
     switched_rows_df = first_result.iloc[::-1].set_index(first_result.index)
-    save(
+    update(
         board_id,
         switched_rows_df,
         monday_token,
