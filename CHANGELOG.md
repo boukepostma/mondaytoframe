@@ -6,6 +6,11 @@
 
 - Add create_board, create_items, delete_board
 
+### Changed
+
+- Renamed load to read
+- Renamed save to update
+
 ## [0.1.3] - 2025-04-05
 
 ## [0.1.2] - 2025-04-05
