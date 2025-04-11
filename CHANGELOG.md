@@ -2,16 +2,14 @@
 
 ## [Unreleased]
 
-## [0.2.0] - 2025-04-11
-
 ### Added
 
--   Add create_board, create_items, delete_board
+- Add create_board, create_items, delete_board
 
 ### Changed
 
--   Renamed load to read
--   Renamed save to update
+- Renamed load to read
+- Renamed save to update
 
 ## [0.1.3] - 2025-04-05
 
@@ -21,9 +19,7 @@
 
 -   Start of Changelog
 
-[Unreleased]: https://github.com/boukepostma/mondaytoframe/compare/0.2.0...HEAD
-
-[0.2.0]: https://github.com/boukepostma/mondaytoframe/compare/0.1.3...0.2.0
+[Unreleased]: https://github.com/boukepostma/mondaytoframe/compare/0.1.3...HEAD
 
 [0.1.3]: https://github.com/boukepostma/mondaytoframe/compare/0.1.2...0.1.3
 
