@@ -81,6 +81,11 @@ def fetch_items_by_board_id(
                         text
                         value
                         type
+                        ... on DropdownValue {{
+                            values {{
+                                label
+                            }}
+                        }}
                     }}
                 }}
             }}
@@ -182,7 +187,7 @@ def read(
     items_parsed = []
     for item in items:
         column_values_dict = {
-            (column_value.id): col_parser_mapping[column_value.id](column_value)
+            (column_value.id): col_parser_mapping[column_value.id](column_value)  # type: ignore[operator]
             for column_value in item.column_values
             if column_value.id not in cols_without_parsers
         }
