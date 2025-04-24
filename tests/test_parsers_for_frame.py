@@ -16,7 +16,7 @@ from mondaytoframe.parsers_for_frame import (
     parse_numbers_for_df,
 )
 import numpy as np
-from mondaytoframe.model import ColumnValue
+from mondaytoframe.model import ColumnValue, DropdownColumnValue
 from deepdiff import DeepDiff
 
 
@@ -162,12 +162,14 @@ from deepdiff import DeepDiff
         ),
         (
             parse_dropdown_for_df,
-            ColumnValue(id="1", text="1, 2", type="dropdown", value='{"ids": [2, 3]}'),
-            {"1", "2"},
+            DropdownColumnValue(
+                id="1", type="dropdown", values=[{"label": "a,"}, {"label": "b,"}]
+            ),
+            {"a,", "b,"},
         ),
         (
             parse_dropdown_for_df,
-            ColumnValue(id="1", text="", type="dropdown", value=None),
+            DropdownColumnValue(id="1", type="dropdown", values=[]),
             set(),
         ),
         (

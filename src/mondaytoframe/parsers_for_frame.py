@@ -4,10 +4,9 @@ from typing import Any
 
 import pandas as pd
 from pydantic import validate_call
-from mondaytoframe.model import ColumnType
+from mondaytoframe.model import ColumnType, DropdownColumnValue
 from mondaytoframe.model import (
     DateRaw,
-    DropdownRaw,
     PeopleRaw,
     ColumnValue,
     PhoneRaw,
@@ -79,15 +78,8 @@ def parse_phone_for_df(v: ColumnValue):
 
 
 @validate_call()
-def parse_dropdown_for_df(v: ColumnValue):
-    if v.value is None or v.text is None:
-        return set()
-    validated = DropdownRaw.model_validate_json(v.value)
-    if v.text.count(",") + 1 != len(validated.ids):
-        raise ValueError(
-            "Make sure the labels in Monday do not contain commas: labels with commas are not supported."
-        )
-    return set(v.text.split(", "))
+def parse_dropdown_for_df(v: DropdownColumnValue):
+    return set(v.label for v in v.values)
 
 
 @validate_call()

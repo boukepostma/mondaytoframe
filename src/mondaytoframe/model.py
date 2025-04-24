@@ -3,7 +3,7 @@ from enum import Enum
 import json
 import logging
 
-from typing import Literal, Optional, TypeAlias
+from typing import Annotated, Literal, Optional, TypeAlias, Union
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic_extra_types.country import CountryAlpha2
@@ -129,7 +129,49 @@ class ItemsByBoardColumn(BaseModel):
 class ColumnValue(BaseModel):
     id: ID
     text: Optional[String]
-    type: ColumnType
+    type: Union[
+        Literal["auto_number"],
+        Literal["board_relation"],
+        Literal["button"],
+        Literal["checkbox"],
+        Literal["color_picker"],
+        Literal["country"],
+        Literal["creation_log"],
+        Literal["date"],
+        Literal["dependency"],
+        Literal["doc"],
+        Literal["email"],
+        Literal["file"],
+        Literal["formula"],
+        Literal["group"],
+        Literal["hour"],
+        Literal["integration"],
+        Literal["item_assignees"],
+        Literal["item_id"],
+        Literal["last_updated"],
+        Literal["link"],
+        Literal["location"],
+        Literal["long_text"],
+        Literal["mirror"],
+        Literal["name"],
+        Literal["numbers"],
+        Literal["people"],
+        Literal["person"],
+        Literal["phone"],
+        Literal["progress"],
+        Literal["rating"],
+        Literal["status"],
+        Literal["subtasks"],
+        Literal["tags"],
+        Literal["team"],
+        Literal["text"],
+        Literal["time_tracking"],
+        Literal["timeline"],
+        Literal["unsupported"],
+        Literal["vote"],
+        Literal["week"],
+        Literal["world_clock"],
+    ]
     value: Optional[JSON]
 
     @model_validator(mode="after")
@@ -153,6 +195,16 @@ class ColumnValue(BaseModel):
         return self
 
 
+class DropdownValueOption(BaseModel):
+    label: str
+
+
+class DropdownColumnValue(BaseModel):
+    id: ID
+    type: Literal["dropdown"]
+    values: list[DropdownValueOption]
+
+
 class ItemsByBoardGroup(BaseModel):
     title: String
 
@@ -161,7 +213,9 @@ class ItemsByBoardItem(BaseModel):
     group: ItemsByBoardGroup
     id: str
     name: str
-    column_values: list[ColumnValue]
+    column_values: list[
+        Annotated[Union[ColumnValue, DropdownColumnValue], Field(discriminator="type")]
+    ]
 
 
 class ItemsByBoardItemsPage(BaseModel):
@@ -208,10 +262,6 @@ class PhoneRaw(BaseModel):
             return self
         except Exception as e:
             raise ValueError(f"Error parsing phone number: {e}")
-
-
-class DropdownRaw(BaseModel):
-    ids: list[int]
 
 
 class DateRaw(BaseModel):
