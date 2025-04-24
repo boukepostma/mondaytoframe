@@ -9,6 +9,7 @@ from mondaytoframe.model import (
     DropdownColumnValue,
     NumberColumnValue,
     PhoneColumnValue,
+    TagsColumnValue,
 )
 from mondaytoframe.model import (
     DateRaw,
@@ -63,8 +64,8 @@ def parse_checkbox_for_df(v: ColumnValue) -> bool:
 
 
 @validate_call()
-def parse_tags_for_df(v: ColumnValue):
-    return v.text.split(", ") if v.text else None
+def parse_tags_for_df(v: TagsColumnValue):
+    return set([v.name for v in v.tags])
 
 
 @validate_call()

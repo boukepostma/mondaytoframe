@@ -86,6 +86,11 @@ def fetch_items_by_board_id(
                                 label
                             }}
                         }}
+                        ... on TagsValue {{
+                            tags {{
+                                name
+                            }}
+                        }}
                     }}
                 }}
             }}
