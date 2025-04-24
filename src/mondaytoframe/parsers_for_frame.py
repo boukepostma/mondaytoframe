@@ -5,6 +5,7 @@ from typing import Any
 import pandas as pd
 from pydantic import validate_call
 from mondaytoframe.model import (
+    CheckboxColumnValue,
     ColumnType,
     DropdownColumnValue,
     NumberColumnValue,
@@ -59,7 +60,7 @@ def parse_status_for_df(v: ColumnValue):
 
 
 @validate_call()
-def parse_checkbox_for_df(v: ColumnValue) -> bool:
+def parse_checkbox_for_df(v: CheckboxColumnValue) -> bool:
     return True if v.text else False
 
 

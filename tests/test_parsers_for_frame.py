@@ -17,6 +17,7 @@ from mondaytoframe.parsers_for_frame import (
 )
 import numpy as np
 from mondaytoframe.model import (
+    CheckboxColumnValue,
     ColumnValue,
     DropdownColumnValue,
     NumberColumnValue,
@@ -123,12 +124,12 @@ from deepdiff import DeepDiff
         ),
         (
             parse_checkbox_for_df,
-            ColumnValue(id="1", text="true", type="checkbox", value=None),
+            CheckboxColumnValue(id="1", text="v", type="checkbox"),
             True,
         ),
         (
             parse_checkbox_for_df,
-            ColumnValue(id="1", text="", type="checkbox", value=None),
+            CheckboxColumnValue(id="1", text="", type="checkbox"),
             False,
         ),
         (

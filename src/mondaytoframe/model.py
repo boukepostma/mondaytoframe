@@ -139,7 +139,6 @@ class ColumnValue(BaseColumnValue):
         Literal["auto_number"],
         Literal["board_relation"],
         Literal["button"],
-        Literal["checkbox"],
         Literal["color_picker"],
         Literal["country"],
         Literal["creation_log"],
@@ -196,6 +195,11 @@ class ColumnValue(BaseColumnValue):
                     f"For link columns, text must equal url. Now text='{as_dict['text']}' and url='{as_dict['url']}'"
                 )
         return self
+
+
+class CheckboxColumnValue(BaseColumnValue):
+    type: Literal["checkbox"]
+    text: Literal["v", ""] = Field(default="")
 
 
 class TagValue(BaseModel):
@@ -274,6 +278,7 @@ class ItemsByBoardItem(BaseModel):
                 NumberColumnValue,
                 PhoneColumnValue,
                 TagsColumnValue,
+                CheckboxColumnValue,
             ],
             Field(discriminator="type"),
         ]
