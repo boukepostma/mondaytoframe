@@ -39,6 +39,57 @@ def _create_or_get_tag(monday: MondayClient, tag_name: str):
     return int(query_result["data"]["create_or_get_tag"]["id"])
 
 
+def fetch_items_by_board_id(
+    monday_client: MondayClient,
+    board_id: str,
+    cursor: str | None = None,
+    limit: int = 25,
+    query_params=None,
+):
+    """
+    Fetch items from a Monday.com board using the GraphQL API.
+
+    Args:
+        monday_client: The Monday.com client instance
+        board_id (str): The board's unique identifier
+        cursor (str, optional): Pagination cursor for fetching next pages
+        limit (int, optional): Number of items to fetch per page (max 500)
+        query_params (dict, optional): Additional query parameters for filtering/sorting
+
+    Returns:
+        dict: The query result containing items and pagination info
+    """
+    limit = min(limit, 500)  # API limit is 500
+    cursor_part = f'cursor: "{cursor}"' if cursor is not None else ""
+    query_params_part = (
+        f"query_params: {query_params}" if query_params is not None else ""
+    )
+
+    query = f"""query {{
+        boards(ids: ["{board_id}"]) {{
+            items_page({cursor_part}, limit: {limit}, {query_params_part}) {{
+                cursor
+                items {{
+                    id
+                    name
+                    group {{
+                        id
+                        title
+                    }}
+                    column_values {{
+                        id
+                        text
+                        value
+                        type
+                    }}
+                }}
+            }}
+        }}
+    }}"""
+
+    return monday_client.custom.execute_custom_query(query)
+
+
 @validate_call(
     config=ConfigDict(arbitrary_types_allowed=True, coerce_numbers_to_str=True)
 )
@@ -118,8 +169,8 @@ def read(
     items = []
     cursor = None
     while True:
-        query_result = monday.boards.fetch_items_by_board_id(
-            board_id, cursor=cursor, **kwargs
+        query_result = fetch_items_by_board_id(
+            monday, board_id, cursor=cursor, **kwargs
         )
         validated = ItemsByBoardResponse(**query_result)
         board = validated.data.boards[0]

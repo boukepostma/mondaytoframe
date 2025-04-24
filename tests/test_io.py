@@ -44,7 +44,7 @@ def test_read_board_as_frame(
     mock_monday_client().boards.fetch_boards_by_id.return_value = (
         response_fetch_boards_by_id
     )
-    mock_monday_client().boards.fetch_items_by_board_id.return_value = (
+    mock_monday_client().custom.execute_custom_query.return_value = (
         response_fetch_items_by_board_id
     )
 
