@@ -154,7 +154,6 @@ class ColumnValue(BaseColumnValue):
         Literal["item_assignees"],
         Literal["item_id"],
         Literal["last_updated"],
-        Literal["link"],
         Literal["location"],
         Literal["long_text"],
         Literal["mirror"],
@@ -185,15 +184,33 @@ class ColumnValue(BaseColumnValue):
                 )
         return self
 
+
+class LinkRaw(BaseModel):
+    text: str
+    url: str
+
     @model_validator(mode="after")
-    def link_text_and_value_are_equal(self) -> "ColumnValue":
-        if (self.type == ColumnType.link) and self.value:
-            as_dict = json.loads(self.value)
-            if as_dict["text"].rstrip("/") != as_dict["url"].rstrip("/"):
-                raise ValueError(
-                    f"For link columns, text must equal url. Now text='{as_dict['text']}' and url='{as_dict['url']}'"
-                )
+    def validate_link_equals_url(self) -> "LinkRaw":
+        if self.text.rstrip("/") != self.url.rstrip("/"):
+            raise ValueError(
+                f"For link columns, text must equal url. Now text='{self.text}' and url='{self.url}'"
+            )
         return self
+
+
+class LinkColumnValue(BaseColumnValue):
+    type: Literal["link"]
+    value: Optional[LinkRaw]
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def parse_json_string(cls, v: Any):
+        if not isinstance(v, str):
+            return v
+        try:
+            return json.loads(v)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON string for link value")
 
 
 class PersonOrTeam(BaseModel):
@@ -306,6 +323,7 @@ class ItemsByBoardItem(BaseModel):
                 TagsColumnValue,
                 CheckboxColumnValue,
                 PeopleColumnValue,
+                LinkColumnValue,
             ],
             Field(discriminator="type"),
         ]

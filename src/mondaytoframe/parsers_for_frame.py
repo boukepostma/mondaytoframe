@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from typing import Any
 
 import pandas as pd
@@ -8,6 +7,7 @@ from mondaytoframe.model import (
     CheckboxColumnValue,
     ColumnType,
     DropdownColumnValue,
+    LinkColumnValue,
     NumberColumnValue,
     PeopleColumnValue,
     PhoneColumnValue,
@@ -37,10 +37,10 @@ def parse_text_for_df(v: ColumnValue):
 
 
 @validate_call()
-def parse_link_for_df(v: ColumnValue):
+def parse_link_for_df(v: LinkColumnValue):
     if v.value is None:
         return None
-    return json.loads(v.value)["url"]
+    return v.value.url
 
 
 @validate_call()
