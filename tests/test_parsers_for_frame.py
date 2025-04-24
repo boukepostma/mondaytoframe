@@ -16,7 +16,12 @@ from mondaytoframe.parsers_for_frame import (
     parse_numbers_for_df,
 )
 import numpy as np
-from mondaytoframe.model import ColumnValue, DropdownColumnValue, NumberColumnValue
+from mondaytoframe.model import (
+    ColumnValue,
+    DropdownColumnValue,
+    NumberColumnValue,
+    PhoneColumnValue,
+)
 from deepdiff import DeepDiff
 
 
@@ -147,7 +152,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_phone_for_df,
-            ColumnValue(
+            PhoneColumnValue(
                 id="1",
                 text="31622222222",
                 type="phone",
@@ -157,7 +162,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_phone_for_df,
-            ColumnValue(id="1", text="", type="phone", value=None),
+            PhoneColumnValue(id="1", text="", type="phone", value=None),
             None,
         ),
         (

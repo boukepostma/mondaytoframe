@@ -4,12 +4,16 @@ from typing import Any
 
 import pandas as pd
 from pydantic import validate_call
-from mondaytoframe.model import ColumnType, DropdownColumnValue, NumberColumnValue
+from mondaytoframe.model import (
+    ColumnType,
+    DropdownColumnValue,
+    NumberColumnValue,
+    PhoneColumnValue,
+)
 from mondaytoframe.model import (
     DateRaw,
     PeopleRaw,
     ColumnValue,
-    PhoneRaw,
 )
 
 
@@ -69,11 +73,10 @@ def parse_long_text_for_df(v: ColumnValue):
 
 
 @validate_call()
-def parse_phone_for_df(v: ColumnValue):
+def parse_phone_for_df(v: PhoneColumnValue):
     if v.value is None:
         return None
-    validated = PhoneRaw.model_validate_json(v.value)
-    return f"{validated.phone} {validated.countryShortName}"
+    return f"{v.value.phone} {v.value.countryShortName}"
 
 
 @validate_call()
