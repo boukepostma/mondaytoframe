@@ -4,14 +4,13 @@ from typing import Any
 
 import pandas as pd
 from pydantic import validate_call
-from mondaytoframe.model import ColumnType, DropdownColumnValue
+from mondaytoframe.model import ColumnType, DropdownColumnValue, NumberColumnValue
 from mondaytoframe.model import (
     DateRaw,
     PeopleRaw,
     ColumnValue,
     PhoneRaw,
 )
-import numpy as np
 
 
 @validate_call()
@@ -83,10 +82,8 @@ def parse_dropdown_for_df(v: DropdownColumnValue):
 
 
 @validate_call()
-def parse_numbers_for_df(v: ColumnValue):
-    if not v.text:
-        return np.nan
-    return float(v.text)
+def parse_numbers_for_df(v: NumberColumnValue):
+    return v.text
 
 
 PARSERS_FOR_DF = {

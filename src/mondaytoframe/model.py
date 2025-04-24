@@ -5,7 +5,8 @@ import logging
 
 from typing import Annotated, Literal, Optional, TypeAlias, Union
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+import numpy as np
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from pydantic_extra_types.country import CountryAlpha2
 from phonenumbers import (
     parse as parse_phone_number,
@@ -127,6 +128,7 @@ class ItemsByBoardColumn(BaseModel):
 
 class BaseColumnValue(BaseModel):
     id: ID
+    model_config = ConfigDict(strict=False)
 
 class ColumnValue(BaseColumnValue):
     text: Optional[String]
@@ -155,7 +157,6 @@ class ColumnValue(BaseColumnValue):
         Literal["long_text"],
         Literal["mirror"],
         Literal["name"],
-        Literal["numbers"],
         Literal["people"],
         Literal["person"],
         Literal["phone"],
@@ -205,6 +206,18 @@ class DropdownColumnValue(BaseColumnValue):
     values: list[DropdownValueOption]
 
 
+class NumberColumnValue(BaseColumnValue):
+    type: Literal["numbers"]
+    text: float = Field(default=np.nan)
+
+    @field_validator("text", mode="before")
+    @classmethod
+    def empty_string_to_nan(cls, v: Any):
+        if isinstance(v, str) and v == "":
+            return np.nan
+        return v
+
+
 class ItemsByBoardGroup(BaseModel):
     title: String
 
@@ -214,7 +227,7 @@ class ItemsByBoardItem(BaseModel):
     id: str
     name: str
     column_values: list[
-        Annotated[Union[ColumnValue, DropdownColumnValue], Field(discriminator="type")]
+        Annotated[Union[ColumnValue, DropdownColumnValue, NumberColumnValue], Field(discriminator="type")]
     ]
 
 
