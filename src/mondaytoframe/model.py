@@ -13,6 +13,7 @@ from phonenumbers import (
     PhoneNumberFormat,
     format_number,
 )
+import json
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -159,7 +160,6 @@ class ColumnValue(BaseColumnValue):
         Literal["name"],
         Literal["people"],
         Literal["person"],
-        Literal["phone"],
         Literal["progress"],
         Literal["rating"],
         Literal["status"],
@@ -197,6 +197,36 @@ class ColumnValue(BaseColumnValue):
         return self
 
 
+class PhoneRaw(BaseModel):
+    phone: str
+    countryShortName: CountryAlpha2
+
+    @model_validator(mode="after")
+    def parse_phone_number(self):
+        try:
+            # Use the country short name as the default region
+            parsed_phone_number = parse_phone_number(self.phone, self.countryShortName)
+            self.phone = format_number(parsed_phone_number, PhoneNumberFormat.E164)
+            return self
+        except Exception as e:
+            raise ValueError(f"Error parsing phone number: {e}")
+
+
+class PhoneColumnValue(BaseColumnValue):
+    type: Literal["phone"]
+    text: Optional[String]
+    value: Optional[PhoneRaw]
+
+    @field_validator("value", mode='before')
+    @classmethod
+    def parse_json_string(cls, v:Any):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                raise ValueError("Invalid JSON string for phone value")
+
+
 class DropdownValueOption(BaseModel):
     label: str
 
@@ -227,7 +257,7 @@ class ItemsByBoardItem(BaseModel):
     id: str
     name: str
     column_values: list[
-        Annotated[Union[ColumnValue, DropdownColumnValue, NumberColumnValue], Field(discriminator="type")]
+        Annotated[Union[ColumnValue, DropdownColumnValue, NumberColumnValue, PhoneColumnValue], Field(discriminator="type")]
     ]
 
 
@@ -262,19 +292,6 @@ class PeopleRaw(BaseModel):
     personsAndTeams: list[PersonOrTeam]
 
 
-class PhoneRaw(BaseModel):
-    phone: str
-    countryShortName: CountryAlpha2
-
-    @model_validator(mode="after")
-    def parse_phone_number(self):
-        try:
-            # Use the country short name as the default region
-            parsed_phone_number = parse_phone_number(self.phone, self.countryShortName)
-            self.phone = format_number(parsed_phone_number, PhoneNumberFormat.E164)
-            return self
-        except Exception as e:
-            raise ValueError(f"Error parsing phone number: {e}")
 
 
 class DateRaw(BaseModel):
