@@ -127,9 +127,11 @@ class SchemaResponse(BaseModel):
 class ItemsByBoardColumn(BaseModel):
     title: String
 
+
 class BaseColumnValue(BaseModel):
     id: ID
     model_config = ConfigDict(strict=False)
+
 
 class ColumnValue(BaseColumnValue):
     text: Optional[String]
@@ -164,7 +166,6 @@ class ColumnValue(BaseColumnValue):
         Literal["rating"],
         Literal["status"],
         Literal["subtasks"],
-        Literal["tags"],
         Literal["team"],
         Literal["text"],
         Literal["time_tracking"],
@@ -197,6 +198,15 @@ class ColumnValue(BaseColumnValue):
         return self
 
 
+class TagValue(BaseModel):
+    name: str
+
+
+class TagsColumnValue(BaseColumnValue):
+    type: Literal["tags"]
+    tags: list[TagValue]
+
+
 class PhoneRaw(BaseModel):
     phone: str
     countryShortName: CountryAlpha2
@@ -217,9 +227,9 @@ class PhoneColumnValue(BaseColumnValue):
     text: Optional[String]
     value: Optional[PhoneRaw]
 
-    @field_validator("value", mode='before')
+    @field_validator("value", mode="before")
     @classmethod
-    def parse_json_string(cls, v:Any):
+    def parse_json_string(cls, v: Any):
         if isinstance(v, str):
             try:
                 return json.loads(v)
@@ -257,7 +267,16 @@ class ItemsByBoardItem(BaseModel):
     id: str
     name: str
     column_values: list[
-        Annotated[Union[ColumnValue, DropdownColumnValue, NumberColumnValue, PhoneColumnValue], Field(discriminator="type")]
+        Annotated[
+            Union[
+                ColumnValue,
+                DropdownColumnValue,
+                NumberColumnValue,
+                PhoneColumnValue,
+                TagsColumnValue,
+            ],
+            Field(discriminator="type"),
+        ]
     ]
 
 
@@ -290,8 +309,6 @@ class PersonOrTeam(BaseModel):
 
 class PeopleRaw(BaseModel):
     personsAndTeams: list[PersonOrTeam]
-
-
 
 
 class DateRaw(BaseModel):

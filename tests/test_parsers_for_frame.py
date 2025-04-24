@@ -21,6 +21,7 @@ from mondaytoframe.model import (
     DropdownColumnValue,
     NumberColumnValue,
     PhoneColumnValue,
+    TagsColumnValue,
 )
 from deepdiff import DeepDiff
 
@@ -132,13 +133,18 @@ from deepdiff import DeepDiff
         ),
         (
             parse_tags_for_df,
-            ColumnValue(id="1", text="tag1, tag2", type="tags", value=None),
-            ["tag1", "tag2"],
+            TagsColumnValue(
+                id="1",
+                text="tag1, tag2",
+                type="tags",
+                tags=[{"name": "tag1"}, {"name": "tag2"}],
+            ),
+            {"tag1", "tag2"},
         ),
         (
             parse_tags_for_df,
-            ColumnValue(id="1", text="", type="tags", value=None),
-            None,
+            TagsColumnValue(id="1", text="", type="tags", tags=[]),
+            set(),
         ),
         (
             parse_long_text_for_df,

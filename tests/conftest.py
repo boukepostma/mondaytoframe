@@ -403,7 +403,7 @@ def dataframe_representation() -> pd.DataFrame:
             "Long text": ["def", None],
             "Numbers": [10.0, None],
             "Priority": ["Critical ⚠️️", None],
-            "Tags": [["A", "B"], None],
+            "Tags": [{"A,", "B"}, set()],
             "Check": [True, False],
             "Link": ["https://somelink.nl/", None],
             "Email": ["test@test.nl", None],
