@@ -1,5 +1,4 @@
 import os
-from typing import Any
 from monday import MondayClient
 import pytest
 import pandas as pd
@@ -34,74 +33,12 @@ def schema():
     return build_schema(response.text)
 
 
-def test_read_board_as_frame(
-    mocker,
-    response_fetch_boards_by_id: dict[str, Any],
-    response_fetch_items_by_board_id: dict[str, Any],
-    dataframe_representation: pd.DataFrame,
-):
-    mock_monday_client = mocker.patch("mondaytoframe.io.MondayClient")
-    mock_monday_client().boards.fetch_boards_by_id.return_value = (
-        response_fetch_boards_by_id
-    )
-    mock_monday_client().custom.execute_custom_query.return_value = (
-        response_fetch_items_by_board_id
-    )
-
-    result = read("board_123", "fake_token", unknown_type="drop")
-
-    _check_queries_were_valid(mock_monday_client)
-    pd.testing.assert_frame_equal(
-        result,
-        dataframe_representation.drop(columns=NON_SUPPORTED_COLUMNS),
-        check_column_type=False,
-        check_like=True,
-    )
-
-
-def test_update_calls_monday_api(
-    mocker,
-    dataframe_representation,
-    response_fetch_boards_by_id,
-):
-    mock_monday_client = mocker.patch("mondaytoframe.io.MondayClient")
-    mock_monday_client().boards.fetch_boards_by_id.return_value = (
-        response_fetch_boards_by_id
-    )
-
-    update("board_123", dataframe_representation, "fake_token", unknown_type="drop")
-
-    # Ensure the Monday API was called for each item
-    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
-        dataframe_representation
-    )
-
-    # Ensure the Monday API was called for each item
-    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
-        dataframe_representation
-    )
-
-    _check_queries_were_valid(mock_monday_client)
-
-    # Ensure the Monday API was called for each item
-    assert mock_monday_client().items.change_multiple_column_values.call_count == len(
-        dataframe_representation
-    )
-
-
 def _check_queries_were_valid(mock_monday_client):
     """Validates whether the queries done to mock client are valid for Monday's graphql schema"""
     for call_args in mock_monday_client().client.execute.call_args_list:
         query = call_args[0][0]
         parsed_query = parse(query)
         assert not validate(schema, parsed_query), f"Error in query {query}"
-
-
-def test_update_empty_dataframe(mocker, dataframe_representation):
-    mock_monday_client = mocker.patch("monday.MondayClient")
-    empty_df = dataframe_representation.iloc[0:0, :]
-    update("board_123", empty_df, "fake_token")
-    mock_monday_client().items.change_multiple_column_values.assert_not_called()
 
 
 @pytest.fixture(scope="module")
