@@ -125,9 +125,10 @@ class SchemaResponse(BaseModel):
 class ItemsByBoardColumn(BaseModel):
     title: String
 
-
-class ColumnValue(BaseModel):
+class BaseColumnValue(BaseModel):
     id: ID
+
+class ColumnValue(BaseColumnValue):
     text: Optional[String]
     type: Union[
         Literal["auto_number"],
@@ -199,8 +200,7 @@ class DropdownValueOption(BaseModel):
     label: str
 
 
-class DropdownColumnValue(BaseModel):
-    id: ID
+class DropdownColumnValue(BaseColumnValue):
     type: Literal["dropdown"]
     values: list[DropdownValueOption]
 
