@@ -159,7 +159,6 @@ class ColumnValue(BaseColumnValue):
         Literal["long_text"],
         Literal["mirror"],
         Literal["name"],
-        Literal["people"],
         Literal["person"],
         Literal["progress"],
         Literal["rating"],
@@ -195,6 +194,32 @@ class ColumnValue(BaseColumnValue):
                     f"For link columns, text must equal url. Now text='{as_dict['text']}' and url='{as_dict['url']}'"
                 )
         return self
+
+
+class PersonOrTeam(BaseModel):
+    id: str
+    kind: Literal["person", "team"]
+
+    model_config = ConfigDict(strict=False, coerce_numbers_to_str=True)
+
+
+class PeopleRaw(BaseModel):
+    personsAndTeams: list[PersonOrTeam]
+
+
+class PeopleColumnValue(BaseColumnValue):
+    type: Literal["people"]
+    value: Optional[PeopleRaw]
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def parse_json_string(cls, v: Any):
+        if not isinstance(v, str):
+            return v
+        try:
+            return json.loads(v)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON string for people value")
 
 
 class CheckboxColumnValue(BaseColumnValue):
@@ -234,11 +259,12 @@ class PhoneColumnValue(BaseColumnValue):
     @field_validator("value", mode="before")
     @classmethod
     def parse_json_string(cls, v: Any):
-        if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                raise ValueError("Invalid JSON string for phone value")
+        if not isinstance(v, str):
+            return v
+        try:
+            return json.loads(v)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON string for phone value")
 
 
 class DropdownValueOption(BaseModel):
@@ -279,6 +305,7 @@ class ItemsByBoardItem(BaseModel):
                 PhoneColumnValue,
                 TagsColumnValue,
                 CheckboxColumnValue,
+                PeopleColumnValue,
             ],
             Field(discriminator="type"),
         ]
@@ -305,15 +332,6 @@ class ItemsByBoardResponse(BaseModel):
 class EmailRaw(BaseModel):
     email: str
     text: str
-
-
-class PersonOrTeam(BaseModel):
-    id: int
-    kind: Literal["person", "team"]
-
-
-class PeopleRaw(BaseModel):
-    personsAndTeams: list[PersonOrTeam]
 
 
 class DateRaw(BaseModel):
