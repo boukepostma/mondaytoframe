@@ -21,6 +21,7 @@ from mondaytoframe.model import (
     ColumnValue,
     DropdownColumnValue,
     NumberColumnValue,
+    PeopleColumnValue,
     PhoneColumnValue,
     TagsColumnValue,
 )
@@ -99,7 +100,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_people_for_df,
-            ColumnValue(
+            PeopleColumnValue(
                 id="1",
                 text="John Doe",
                 type="people",
@@ -109,7 +110,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_people_for_df,
-            ColumnValue(id="1", text="", type="people", value=None),
+            PeopleColumnValue(id="1", text="", type="people", value=None),
             None,
         ),
         (

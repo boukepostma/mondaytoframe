@@ -9,14 +9,11 @@ from mondaytoframe.model import (
     ColumnType,
     DropdownColumnValue,
     NumberColumnValue,
+    PeopleColumnValue,
     PhoneColumnValue,
     TagsColumnValue,
 )
-from mondaytoframe.model import (
-    DateRaw,
-    PeopleRaw,
-    ColumnValue,
-)
+from mondaytoframe.model import DateRaw, ColumnValue
 
 
 @validate_call()
@@ -47,11 +44,10 @@ def parse_link_for_df(v: ColumnValue):
 
 
 @validate_call()
-def parse_people_for_df(v: ColumnValue):
-    if not v.value:
+def parse_people_for_df(v: PeopleColumnValue):
+    if v.value is None:
         return None
-    validated = PeopleRaw.model_validate_json(v.value)
-    return ",".join([str(v.id) for v in validated.personsAndTeams])
+    return ",".join([v.id for v in v.value.personsAndTeams])
 
 
 @validate_call()
