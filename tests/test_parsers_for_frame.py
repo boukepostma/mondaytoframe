@@ -20,6 +20,7 @@ from mondaytoframe.model import (
     CheckboxColumnValue,
     ColumnValue,
     DropdownColumnValue,
+    LinkColumnValue,
     NumberColumnValue,
     PeopleColumnValue,
     PhoneColumnValue,
@@ -85,7 +86,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_link_for_df,
-            ColumnValue(
+            LinkColumnValue(
                 id="1",
                 text="https://example.com",
                 type="link",
@@ -95,7 +96,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_link_for_df,
-            ColumnValue(id="1", text="", type="link", value=None),
+            LinkColumnValue(id="1", text="", type="link", value=None),
             None,
         ),
         (
