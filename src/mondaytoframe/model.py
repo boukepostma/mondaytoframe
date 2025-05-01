@@ -206,6 +206,15 @@ class DateRaw(BaseModel):
         return datetime.time(0, 0, 0) if v is None else v
 
 
+def _parse_json_string(v: Any):
+    if not isinstance(v, str):
+        return v
+    try:
+        return json.loads(v)
+    except json.JSONDecodeError:
+        raise ValueError(f"Invalid JSON string {v}")
+
+
 class DateColumnValue(BaseColumnValue):
     type: Literal["date"]
     text: Optional[String]
@@ -214,12 +223,7 @@ class DateColumnValue(BaseColumnValue):
     @field_validator("value", mode="before")
     @classmethod
     def parse_json_string(cls, v: Any):
-        if not isinstance(v, str):
-            return v
-        try:
-            return json.loads(v)
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON string for date value")
+        return _parse_json_string(v)
 
 
 class LinkColumnValue(BaseColumnValue):
@@ -229,12 +233,7 @@ class LinkColumnValue(BaseColumnValue):
     @field_validator("value", mode="before")
     @classmethod
     def parse_json_string(cls, v: Any):
-        if not isinstance(v, str):
-            return v
-        try:
-            return json.loads(v)
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON string for link value")
+        return _parse_json_string(v)
 
 
 class PersonOrTeam(BaseModel):
@@ -255,12 +254,7 @@ class PeopleColumnValue(BaseColumnValue):
     @field_validator("value", mode="before")
     @classmethod
     def parse_json_string(cls, v: Any):
-        if not isinstance(v, str):
-            return v
-        try:
-            return json.loads(v)
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON string for people value")
+        return _parse_json_string(v)
 
 
 class CheckboxColumnValue(BaseColumnValue):
@@ -300,12 +294,7 @@ class PhoneColumnValue(BaseColumnValue):
     @field_validator("value", mode="before")
     @classmethod
     def parse_json_string(cls, v: Any):
-        if not isinstance(v, str):
-            return v
-        try:
-            return json.loads(v)
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON string for phone value")
+        return _parse_json_string(v)
 
 
 class DropdownValueOption(BaseModel):
