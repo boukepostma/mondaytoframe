@@ -13,7 +13,6 @@ from phonenumbers import (
     PhoneNumberFormat,
     format_number,
 )
-import json
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -142,7 +141,6 @@ class ColumnValue(BaseColumnValue):
         Literal["color_picker"],
         Literal["country"],
         Literal["creation_log"],
-        Literal["date"],
         Literal["dependency"],
         Literal["doc"],
         Literal["email"],
@@ -196,6 +194,32 @@ class LinkRaw(BaseModel):
                 f"For link columns, text must equal url. Now text='{self.text}' and url='{self.url}'"
             )
         return self
+
+
+class DateRaw(BaseModel):
+    date: datetime.date | None = None
+    time: datetime.time = Field(default_factory=lambda: datetime.time(0, 0, 0))
+
+    @field_validator("time", mode="before")
+    @classmethod
+    def set_default_time_if_none(cls, v: Any):
+        return datetime.time(0, 0, 0) if v is None else v
+
+
+class DateColumnValue(BaseColumnValue):
+    type: Literal["date"]
+    text: Optional[String]
+    value: Optional[DateRaw]
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def parse_json_string(cls, v: Any):
+        if not isinstance(v, str):
+            return v
+        try:
+            return json.loads(v)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON string for date value")
 
 
 class LinkColumnValue(BaseColumnValue):
@@ -324,6 +348,7 @@ class ItemsByBoardItem(BaseModel):
                 CheckboxColumnValue,
                 PeopleColumnValue,
                 LinkColumnValue,
+                DateColumnValue,
             ],
             Field(discriminator="type"),
         ]
@@ -345,16 +370,6 @@ class ItemsByBoardData(BaseModel):
 
 class ItemsByBoardResponse(BaseModel):
     data: ItemsByBoardData
-
-
-class DateRaw(BaseModel):
-    date: datetime.date | None = None
-    time: datetime.time = Field(default_factory=lambda: datetime.time(0, 0, 0))
-
-    @field_validator("time", mode="before")
-    @classmethod
-    def set_default_time_if_none(cls, v: Any):
-        return datetime.time(0, 0, 0) if v is None else v
 
 
 class BoardKind(Enum):

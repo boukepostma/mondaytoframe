@@ -19,6 +19,7 @@ import numpy as np
 from mondaytoframe.model import (
     CheckboxColumnValue,
     ColumnValue,
+    DateColumnValue,
     DropdownColumnValue,
     LinkColumnValue,
     NumberColumnValue,
@@ -44,19 +45,19 @@ from deepdiff import DeepDiff
         ),
         (
             parse_date_for_df,
-            ColumnValue(
+            DateColumnValue(
                 id="1", text="2025-02-10", type="date", value='{"date": "2025-02-10"}'
             ),
             datetime(2025, 2, 10, 0, 0),
         ),
         (
             parse_date_for_df,
-            ColumnValue(id="1", text="", type="date", value=None),
+            DateColumnValue(id="1", text="", type="date", value=None),
             pd.NaT,
         ),
         (
             parse_date_for_df,
-            ColumnValue(
+            DateColumnValue(
                 id="1",
                 text="",
                 type="date",
@@ -66,7 +67,7 @@ from deepdiff import DeepDiff
         ),
         (
             parse_date_for_df,
-            ColumnValue(
+            DateColumnValue(
                 id="1",
                 text="",
                 type="date",

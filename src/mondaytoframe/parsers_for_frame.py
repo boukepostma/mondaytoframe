@@ -6,6 +6,8 @@ from pydantic import validate_call
 from mondaytoframe.model import (
     CheckboxColumnValue,
     ColumnType,
+    DateColumnValue,
+    ColumnValue,
     DropdownColumnValue,
     LinkColumnValue,
     NumberColumnValue,
@@ -13,7 +15,6 @@ from mondaytoframe.model import (
     PhoneColumnValue,
     TagsColumnValue,
 )
-from mondaytoframe.model import DateRaw, ColumnValue
 
 
 @validate_call()
@@ -22,13 +23,10 @@ def parse_email_for_df(v: ColumnValue) -> Any:
 
 
 @validate_call()
-def parse_date_for_df(v: ColumnValue) -> Any:
-    if v.value is None:
+def parse_date_for_df(v: DateColumnValue) -> Any:
+    if v.value is None or v.value.date is None:
         return pd.NaT
-    validated = DateRaw.model_validate_json(v.value)
-    if validated.date is None:
-        return pd.NaT
-    return datetime.combine(validated.date, validated.time)
+    return datetime.combine(v.value.date, v.value.time)
 
 
 @validate_call()
