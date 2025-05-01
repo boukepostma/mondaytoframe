@@ -347,11 +347,6 @@ class ItemsByBoardResponse(BaseModel):
     data: ItemsByBoardData
 
 
-class EmailRaw(BaseModel):
-    email: str
-    text: str
-
-
 class DateRaw(BaseModel):
     date: datetime.date | None = None
     time: datetime.time = Field(default_factory=lambda: datetime.time(0, 0, 0))
