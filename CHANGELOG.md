@@ -2,10 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-05-01
+
 ### Changed
+
 -   Support dropdown and tags labels with comma 
 
 ### Fixed
+
 -   No more double validation of input data
 
 ## [0.2.0] - 2025-04-11
@@ -27,7 +31,9 @@
 
 -   Start of Changelog
 
-[Unreleased]: https://github.com/boukepostma/mondaytoframe/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/boukepostma/mondaytoframe/compare/0.2.1...HEAD
+
+[0.2.1]: https://github.com/boukepostma/mondaytoframe/compare/0.2.0...0.2.1
 
 [0.2.0]: https://github.com/boukepostma/mondaytoframe/compare/0.1.3...0.2.0
 
