@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+-   Support dropdown and tags labels with comma 
+
+### Fixed
+-   No more double validation of input data
+
 ## [0.2.0] - 2025-04-11
 
 ### Added
