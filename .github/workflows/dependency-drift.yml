@@ -1,0 +1,29 @@
+name: Dependency Drift
+
+on:
+  schedule:
+    # Run weekly on Monday at 2 AM UTC
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+
+jobs:
+  test-with-latest-deps:
+    runs-on: ubuntu-latest
+    environment: test
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.3"
+
+      - name: Run tests with latest dependencies
+        run: uv run --group=dev --upgrade pytest
+        env:
+          MONDAY_TOKEN: ${{ secrets.MONDAY_TOKEN }}
+
+      - name: Report dependency versions
+        if: always()
+        run: uv pip list
