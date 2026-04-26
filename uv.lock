@@ -622,7 +622,7 @@ wheels = [
 
 [[package]]
 name = "mondaytoframe"
-version = "0.2.1"
+version = "0.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "monday" },
@@ -657,8 +657,8 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "monday", specifier = ">=2.0.1" },
-    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "monday", specifier = ">=2.0.1,<2.1.0" },
+    { name = "pandas", specifier = ">=2.2.3,<3" },
     { name = "phonenumbers", specifier = ">=8.13.55" },
     { name = "pycountry", specifier = ">=24.6.1" },
     { name = "pydantic", specifier = ">=2.10.6" },
