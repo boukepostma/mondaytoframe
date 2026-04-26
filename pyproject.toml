@@ -8,8 +8,8 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "monday>=2.0.1",
-    "pandas>=2.2.3",
+    "monday>=2.0.1,<2.1.0",
+    "pandas>=2.2.3,<3",
     "phonenumbers>=8.13.55",
     "pycountry>=24.6.1",
     "pydantic>=2.10.6",
